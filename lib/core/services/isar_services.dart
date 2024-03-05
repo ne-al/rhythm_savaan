@@ -1,6 +1,6 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:rhythm_savaan/core/models/user_model.dart';
+import 'package:rhythm_savaan/core/models/isar_models/user_model.dart';
 
 class IsarServices {
   late Future<Isar> db;
@@ -9,12 +9,24 @@ class IsarServices {
     db = openDb();
   }
 
-  Future<void> write(String username) async {
+  Future<void> createUser(String username) async {
     final isar = await db;
     User model = User()..username = username;
 
     isar.writeTxnSync(() => isar.users.putSync(model));
   }
+
+  //! create a new playlist
+
+  //! edit playlist by id
+
+  //! delete playlist by id
+
+  //! fetch playlist by id
+
+  //! add song to playlist
+
+  //! remove song from playlist
 
   Future<Isar> openDb() async {
     if (Isar.instanceNames.isEmpty) {

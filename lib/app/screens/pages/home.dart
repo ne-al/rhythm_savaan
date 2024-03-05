@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rhythm_savaan/core/api/music_api.dart';
 import 'package:rhythm_savaan/core/services/isar_services.dart';
 
 class HomePage extends StatelessWidget {
@@ -14,7 +15,12 @@ class HomePage extends StatelessWidget {
                 onPressed: () async {
                   await IsarServices().write('username');
                 },
-                child: const Text('Test'))
+                child: const Text('Test')),
+            TextButton(
+                onPressed: () async {
+                  await MusicApi().fetchSongRecommendation();
+                },
+                child: const Text('Get Song'))
           ],
         ),
       ),

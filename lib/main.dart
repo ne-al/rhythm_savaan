@@ -8,7 +8,6 @@ import 'package:rhythm_savaan/core/services/isar_services.dart';
 late AudioHandler audioHandler;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  IsarServices();
   audioHandler = await AudioService.init(
     builder: () => MyAudioHandler(),
     config: const AudioServiceConfig(
@@ -18,6 +17,7 @@ void main() async {
       androidStopForegroundOnPause: true,
     ),
   );
+  IsarServices();
   runApp(
     const ProviderScope(
       child: RhythmSaavan(),
