@@ -30,25 +30,25 @@ class _BottomNavBarState extends State<BottomNavBar> {
     Color inactiveColor = Theme.of(context).colorScheme.secondary;
     return [
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.home),
+        icon: const Icon(Icons.home_rounded),
         title: "Home",
         activeColorPrimary: activeColor,
         inactiveColorPrimary: inactiveColor,
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.home),
-        title: "Home",
+        icon: const Icon(Icons.search_rounded),
+        title: "Search",
         activeColorPrimary: activeColor,
         inactiveColorPrimary: inactiveColor,
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.settings),
-        title: "Settings",
+        icon: const Icon(Icons.library_music_rounded),
+        title: "Playlist",
         activeColorPrimary: activeColor,
         inactiveColorPrimary: inactiveColor,
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.settings),
+        icon: const Icon(Icons.settings_rounded),
         title: "Settings",
         activeColorPrimary: activeColor,
         inactiveColorPrimary: inactiveColor,
