@@ -3,7 +3,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:rhythm_savaan/core/models/isar_models/user_model.dart';
 
 class IsarServices {
-  late Future<Isar> db;
+  static late Future<Isar> db;
 
   IsarServices() {
     db = openDb();
