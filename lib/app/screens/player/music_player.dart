@@ -2,8 +2,10 @@ import 'package:audio_service/audio_service.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:rhythm_savaan/core/models/freezed_models/helper_models/songs_model.dart';
+import 'package:rhythm_savaan/core/providers/music_providers.dart';
 import 'package:rhythm_savaan/main.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -199,29 +201,36 @@ Widget _musicControllers() {
 }
 
 Widget _repeatMode() {
-  return StreamBuilder(
-    stream:
-        audioHandler.playbackState.map((event) => event.repeatMode).distinct(),
-    builder: (context, snapshot) {
-      final repeatMode = snapshot.data ?? AudioServiceRepeatMode.none;
-      const icons = [
-        Icon(Icons.repeat, color: Colors.grey),
-        Icon(Icons.repeat, color: Colors.orange),
-        Icon(Icons.repeat_one, color: Colors.orange),
-      ];
-      const cycleModes = [
-        AudioServiceRepeatMode.none,
-        AudioServiceRepeatMode.all,
-        AudioServiceRepeatMode.one,
-      ];
-      final index = cycleModes.indexOf(repeatMode);
-      return IconButton(
-        icon: icons[index],
-        onPressed: () {
-          audioHandler.setRepeatMode(cycleModes[
-              (cycleModes.indexOf(repeatMode) + 1) % cycleModes.length]);
-        },
-      );
+  return Consumer(
+    builder: (context, ref, child) {
+      return ref.watch(repeatModeStreamProvider).when(
+            data: (data) {
+              final repeatMode = data;
+              const icons = [
+                Icon(Icons.repeat, color: Colors.grey),
+                Icon(Icons.repeat, color: Colors.orange),
+                Icon(Icons.repeat_one, color: Colors.orange),
+              ];
+              const cycleModes = [
+                AudioServiceRepeatMode.none,
+                AudioServiceRepeatMode.all,
+                AudioServiceRepeatMode.one,
+              ];
+              final index = cycleModes.indexOf(repeatMode);
+              return IconButton(
+                icon: icons[index],
+                onPressed: () {
+                  audioHandler.setRepeatMode(cycleModes[
+                      (cycleModes.indexOf(repeatMode) + 1) %
+                          cycleModes.length]);
+                },
+              );
+            },
+            error: (error, stackTrace) =>
+                IconButton(onPressed: () {}, icon: const Icon(Icons.repeat)),
+            loading: () =>
+                IconButton(onPressed: () {}, icon: const Icon(Icons.repeat)),
+          );
     },
   );
 }

@@ -9,15 +9,13 @@ part 'album_model.g.dart';
 class AlbumModel with _$AlbumModel {
   const AlbumModel._();
   const factory AlbumModel({
+    required String id,
     required String name,
-    required String year,
-    required String releaseDate,
-    required String songCount,
+    @Default('') String type,
+    @Default('0') String songCount,
     required String url,
-    required String primaryArtistsId,
-    required String primaryArtists,
-    required List<ImageModel> image,
-    required List<SongsModel> songs,
+    @Default([]) List<ImageModel?> image,
+    @Default([]) List<SongsModel?> songs,
   }) = _AlbumModel;
 
   factory AlbumModel.fromJson(Map<String, dynamic> data) =>
