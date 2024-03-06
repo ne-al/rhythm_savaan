@@ -1,9 +1,9 @@
-import 'package:audio_service/audio_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+import 'package:rhythm_savaan/app/screens/player/music_player.dart';
 import 'package:rhythm_savaan/core/providers/music_providers.dart';
-import 'package:rhythm_savaan/main.dart';
 
 class SearchPage extends ConsumerStatefulWidget {
   const SearchPage({super.key});
@@ -21,6 +21,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     if (searchController.text.trim().isEmpty) return;
 
     //! perform query
+    ref.invalidate(searchProvider);
   }
 
   @override
@@ -32,6 +33,9 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         title: TextField(
           controller: searchController,
           focusNode: searchFocusNode,
+          onSubmitted: (value) {
+            search();
+          },
           decoration: InputDecoration(
             prefixIcon: Icon(
               Icons.search_rounded,
@@ -63,18 +67,11 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                   var data = musicData[index];
                   return GestureDetector(
                     onTap: () {
-                      MediaItem item = MediaItem(
-                          id: data.id,
-                          title: data.name,
-                          artUri: Uri.parse(data.image[2].link),
-                          artist: data.primaryArtists,
-                          duration: Duration(seconds: int.parse(data.duration)),
-                          extras: {
-                            'url': data.downloadUrl[4].link,
-                          });
-
-                      audioHandler.addQueueItem(item);
-                      audioHandler.play();
+                      pushNewScreen(
+                        context,
+                        screen: MusicPlayer(songsModel: data),
+                        withNavBar: false,
+                      );
                     },
                     child: ListTile(
                       leading: ClipRRect(
@@ -101,7 +98,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               child: Text('$error'),
             ),
             loading: () => const Center(
-              child: LinearProgressIndicator(),
+              child: CircularProgressIndicator.adaptive(),
             ),
           ),
     );
