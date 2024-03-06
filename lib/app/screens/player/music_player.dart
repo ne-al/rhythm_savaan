@@ -2,7 +2,6 @@ import 'package:audio_service/audio_service.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 import 'package:rhythm_savaan/core/models/freezed_models/helper_models/songs_model.dart';
 import 'package:rhythm_savaan/main.dart';
@@ -48,7 +47,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
       audioHandler.removeQueueItemAt(0);
     }
 
-    audioHandler.addQueueItem(item);
+    await audioHandler.addQueueItem(item);
     audioHandler.play();
   }
 
@@ -75,7 +74,9 @@ class _MusicPlayerState extends State<MusicPlayer> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _musicThumbnailTitleWidget(widget.songsModel, width),
+            const Gap(24),
             _progressBarController(_positionDataStream, width),
+            const Gap(12),
             _musicControllers(),
           ],
         ),
@@ -85,7 +86,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
 }
 
 Widget _musicThumbnailTitleWidget(SongsModel data, double width) {
-  return StreamBuilder(
+  return StreamBuilder<MediaItem?>(
     stream: audioHandler.mediaItem,
     builder: (context, snapshot) {
       return Column(
@@ -93,7 +94,7 @@ Widget _musicThumbnailTitleWidget(SongsModel data, double width) {
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: CachedNetworkImage(
-              imageUrl: snapshot.data?.artUri.toString() ?? data.image[3].link,
+              imageUrl: snapshot.data?.artUri.toString() ?? data.image[2].link,
             ),
           ),
           Padding(

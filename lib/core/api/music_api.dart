@@ -17,8 +17,11 @@ class MusicApi {
 
   //! query song
   Future<List<SongsModel>> querySong(String query) async {
-    var response =
-        await dio.get('$api/search/songs', queryParameters: {'query': query});
+    var response = await dio.get('$api/search/songs', queryParameters: {
+      'query': query,
+      'page': 1,
+      'limit': 15,
+    });
 
     List<SongsModel> songs = [];
     Map<String, dynamic> data = response.data;

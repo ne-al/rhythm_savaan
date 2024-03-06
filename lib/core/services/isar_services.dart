@@ -1,5 +1,7 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:rhythm_savaan/core/models/isar_models/playlist_model.dart';
+import 'package:rhythm_savaan/core/models/isar_models/song_model.dart';
 import 'package:rhythm_savaan/core/models/isar_models/user_model.dart';
 
 class IsarServices {
@@ -32,7 +34,7 @@ class IsarServices {
     if (Isar.instanceNames.isEmpty) {
       final dir = await getApplicationDocumentsDirectory();
       final isar = await Isar.open(
-        [UserSchema],
+        [UserSchema, PlaylistModelSchema, SongModelSchema],
         inspector: true,
         directory: dir.path,
       );
