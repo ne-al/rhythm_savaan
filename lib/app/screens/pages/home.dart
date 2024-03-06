@@ -24,7 +24,7 @@ class HomePage extends ConsumerWidget {
                   child: Row(
                     children: [
                       Text(
-                        'Recommended',
+                        'Latest Releases',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -166,7 +166,7 @@ class HomePage extends ConsumerWidget {
                   child: Row(
                     children: [
                       Text(
-                        'Trending',
+                        'Top Charts',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,

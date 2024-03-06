@@ -43,13 +43,15 @@ class _MusicPlayerState extends State<MusicPlayer> {
     if (audioHandler.queue.value.contains(item)) {
       return;
     }
-
+    if (audioHandler.queue.value.length > 1) {
+      return;
+    }
     if (audioHandler.queue.value.length <= 1 &&
         !audioHandler.queue.value.contains(item)) {
       audioHandler.removeQueueItemAt(0);
     }
 
-    await audioHandler.addQueueItem(item);
+    audioHandler.addQueueItem(item);
     audioHandler.play();
   }
 
@@ -158,7 +160,7 @@ Widget _progressBarController(Stream<PositionData> data, double width) {
 }
 
 Widget _musicControllers() {
-  return StreamBuilder(
+  return StreamBuilder<PlaybackState>(
     stream: audioHandler.playbackState,
     builder: (context, snapshot) {
       return Row(
@@ -201,6 +203,27 @@ Widget _musicControllers() {
 }
 
 Widget _repeatMode() {
+  // return StreamBuilder(
+  //   stream:
+  //       audioHandler.playbackState.map((event) => event.repeatMode).distinct(),
+  //   builder: (context, snapshot) {
+  //     return IconButton(
+  //       onPressed: () {
+  //         snapshot.data!.index == 0
+  //             ? audioHandler.setRepeatMode(AudioServiceRepeatMode.one)
+  //             : snapshot.data!.index == 1
+  //                 ? audioHandler.setRepeatMode(AudioServiceRepeatMode.group)
+  //                 : audioHandler.setRepeatMode(AudioServiceRepeatMode.none);
+  //       },
+  //       icon: snapshot.data!.index == 0
+  //           ? const Icon(Icons.repeat_rounded)
+  //           : snapshot.data!.index == 1
+  //               ? const Icon(Icons.repeat_one_rounded)
+  //               : const Icon(Icons.repeat_on),
+  //     );
+  //   },
+  // );
+
   return Consumer(
     builder: (context, ref, child) {
       return ref.watch(repeatModeStreamProvider).when(
