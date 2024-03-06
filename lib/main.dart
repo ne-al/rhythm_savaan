@@ -1,5 +1,6 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rhythm_savaan/app/components/bottom_navbar/bottom_navbar.dart';
 import 'package:rhythm_savaan/core/services/audio_service.dart';
@@ -17,6 +18,7 @@ void main() async {
       androidStopForegroundOnPause: true,
     ),
   );
+  await FlutterDisplayMode.setHighRefreshRate();
   IsarServices();
   runApp(
     const ProviderScope(
