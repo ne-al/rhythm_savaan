@@ -47,7 +47,10 @@ class HomePage extends ConsumerWidget {
                   padding: const EdgeInsets.only(bottom: 40),
                   child: Column(
                     children: [
+                      //! Recent plays data
                       lastSessionWidget(ref, context),
+
+                      //! Trending songs data
                       const Padding(
                         padding:
                             EdgeInsets.symmetric(vertical: 14, horizontal: 8),
@@ -125,6 +128,7 @@ class HomePage extends ConsumerWidget {
                           ),
                         ),
                       ),
+
                       //! Album
                       const Padding(
                         padding:
@@ -202,7 +206,7 @@ class HomePage extends ConsumerWidget {
                         ),
                       ),
 
-                      //!
+                      //! Popular playlists data
 
                       const Padding(
                         padding:
@@ -280,7 +284,7 @@ class HomePage extends ConsumerWidget {
                         ),
                       ),
 
-                      //!
+                      //! Top charts
 
                       const Padding(
                         padding:
@@ -357,6 +361,8 @@ class HomePage extends ConsumerWidget {
                           ),
                         ),
                       ),
+
+                      //! checking if miniplayer is visible and if visible then adding height at bottom
 
                       ref.watch(isPlayingProvider).when(
                             data: (data) {
