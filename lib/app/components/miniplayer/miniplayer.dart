@@ -31,6 +31,7 @@ class MiniPlayer extends ConsumerWidget {
                             context,
                             screen: MusicPlayer(
                               songsModel: songsData,
+                              fromMiniplayer: true,
                             ),
                           );
                         },

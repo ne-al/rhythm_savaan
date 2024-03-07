@@ -9,8 +9,12 @@ import 'package:rhythm_savaan/main.dart';
 
 class MusicPlayer extends StatefulWidget {
   final SongsModel songsModel;
+  final bool fromMiniplayer;
+  final int songIndex;
   const MusicPlayer({
     super.key,
+    this.fromMiniplayer = false,
+    this.songIndex = 0,
     required this.songsModel,
   });
 
@@ -43,6 +47,11 @@ class _MusicPlayerState extends State<MusicPlayer> {
     //! initializing the commonly used values
     int queueLength = audioHandler.queue.value.length;
     List<MediaItem> queueValue = audioHandler.queue.value;
+
+    //! if it is from miniplayer then it skip all change to audio handler and keep all the data same
+    if (widget.fromMiniplayer == true) {
+      return;
+    }
 
     //! it skip when the playing song is already in queue so it wont have 2 or more same song in queue
     //! also after && it checks if currently user in playing any playlist
