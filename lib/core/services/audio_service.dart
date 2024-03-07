@@ -111,6 +111,9 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
 
   @override
   Future<void> addQueueItem(MediaItem mediaItem) async {
+    if (_playlist.length > 0) {
+      _playlist.clear();
+    }
     // manage Just Audio
     final audioSource = _createAudioSource(mediaItem);
     _playlist.add(audioSource);

@@ -43,7 +43,8 @@ class _MusicPlayerState extends State<MusicPlayer> {
     );
 
     //! it skip when the playing song is already in queue so it wont have 2 or more same song in queue
-    if (audioHandler.queue.value.contains(item)) {
+    if (audioHandler.queue.value.contains(item) &&
+        audioHandler.queue.value.isEmpty) {
       return;
     }
 
