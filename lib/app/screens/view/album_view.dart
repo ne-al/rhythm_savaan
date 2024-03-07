@@ -45,7 +45,7 @@ class AlbumView extends ConsumerWidget {
             : type == 'song'
                 ? ref.watch(songByIdProvider(id)).when(
                       data: (songData) {
-                        return _songView(songData, height);
+                        return _songView(songData, height, context);
                       },
                       error: (error, stackTrace) => Center(
                         child: Text('$error'),
@@ -81,27 +81,113 @@ class AlbumView extends ConsumerWidget {
   }
 }
 
-Widget _songView(SongsModel songData, double height) {
-  return Column(
-    children: [
-      SizedBox(
-        height: height * 0.45,
-        child: CachedNetworkImage(imageUrl: songData.image[2].link),
+Widget _songView(SongsModel songData, double height, BuildContext context) {
+  String thumbnail = songData.image[2].link;
+  String name = songData.name;
+  List<SongsModel> songList = [];
+  songList.add(songData);
+
+  return CustomScrollView(
+    slivers: [
+      SliverAppBar(
+        floating: true,
+        expandedHeight: height * 0.25,
+        flexibleSpace: FlexibleSpaceBar(
+          background: Container(
+            color: Theme.of(context).colorScheme.background,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: CachedNetworkImage(
+                          imageUrl: thumbnail,
+                          fit: BoxFit.cover,
+                          height: height * 0.14,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              name,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                            Text(
+                              'Songs: ${songList.length}',
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      _playAll(songList),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
       ),
-      const Gap(6),
-      // _playAll(),
-      const Row(
-        children: [Expanded(child: Divider())],
-      ),
-      ListView.builder(
-        shrinkWrap: true,
-        itemCount: 1,
-        itemBuilder: (BuildContext context, int index) {
-          return SongTile(data: songData);
+      SliverList.builder(
+        itemCount: songList.length,
+        itemBuilder: (context, index) {
+          var data = songList[index];
+          return SongTile(data: data);
         },
-      ),
+      )
     ],
   );
+
+  // Column(
+  //   children: [
+  //     SizedBox(
+  //       height: height * 0.45,
+  //       child: CachedNetworkImage(imageUrl: songData.image[2].link),
+  //     ),
+  //     const Gap(6),
+  //     // _playAll(),
+  //     const Row(
+  //       children: [Expanded(child: Divider())],
+  //     ),
+  //     ListView.builder(
+  //       shrinkWrap: true,
+  //       itemCount: 1,
+  //       itemBuilder: (BuildContext context, int index) {
+  //         return SongTile(data: songData);
+  //       },
+  //     ),
+  //   ],
+  // );
 }
 
 Widget _playAll(List<SongsModel?> songsList) {
@@ -153,6 +239,7 @@ Widget _playlistView(String name, String thumbnail, List<SongsModel?> songsData,
   return CustomScrollView(
     slivers: [
       SliverAppBar(
+        floating: true,
         expandedHeight: height * 0.25,
         flexibleSpace: FlexibleSpaceBar(
           background: Container(

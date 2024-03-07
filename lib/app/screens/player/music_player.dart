@@ -2,10 +2,8 @@ import 'package:audio_service/audio_service.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:rhythm_savaan/core/models/freezed_models/helper_models/songs_model.dart';
-import 'package:rhythm_savaan/core/providers/music_providers.dart';
 import 'package:rhythm_savaan/main.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -41,21 +39,21 @@ class _MusicPlayerState extends State<MusicPlayer> {
         'url': data.downloadUrl[4].link,
       },
     );
-
+    int queueLength = audioHandler.queue.value.length;
+    List<MediaItem> queueValue = audioHandler.queue.value;
     //! it skip when the playing song is already in queue so it wont have 2 or more same song in queue
-    if (audioHandler.queue.value.contains(item) &&
-        audioHandler.queue.value.isEmpty) {
-      return;
-    }
+    if (queueValue.contains(item)) return;
 
     //! it remove current song from queue and add new one when there is song change request done by the user
-    if (audioHandler.queue.value.length <= 1 &&
-        !audioHandler.queue.value.contains(item)) {
+    if (queueLength <= 1 && !queueValue.contains(item)) {
       audioHandler.removeQueueItemAt(0);
     }
 
+    //! if user request a new song then remove all song with queue songs and only store that song in queue
+    //todo
+
     //! add single song to queue then play it
-    audioHandler.addQueueItem(item);
+    await audioHandler.addQueueItem(item);
     audioHandler.play();
   }
 
@@ -168,7 +166,7 @@ Widget _progressBarController(Stream<PositionData> data, double width) {
 }
 
 Widget _musicControllers() {
-  return StreamBuilder<PlaybackState>(
+  return StreamBuilder<PlaybackState?>(
     stream: audioHandler.playbackState,
     builder: (context, snapshot) {
       return Row(
@@ -185,13 +183,13 @@ Widget _musicControllers() {
           IconButton(
             iconSize: 75,
             onPressed: () {
-              snapshot.data!.playing
+              snapshot.data?.playing ?? false
                   ? audioHandler.pause()
                   : audioHandler.play();
             },
-            icon: !snapshot.data!.playing
-                ? const Icon(Icons.play_arrow_rounded)
-                : const Icon(Icons.pause_rounded),
+            icon: snapshot.data?.playing ?? false
+                ? const Icon(Icons.pause_rounded)
+                : const Icon(Icons.play_arrow_rounded),
           ),
           IconButton(
             iconSize: 50,
@@ -211,57 +209,29 @@ Widget _musicControllers() {
 }
 
 Widget _repeatMode() {
-  // return StreamBuilder(
-  //   stream:
-  //       audioHandler.playbackState.map((event) => event.repeatMode).distinct(),
-  //   builder: (context, snapshot) {
-  //     return IconButton(
-  //       onPressed: () {
-  //         snapshot.data!.index == 0
-  //             ? audioHandler.setRepeatMode(AudioServiceRepeatMode.one)
-  //             : snapshot.data!.index == 1
-  //                 ? audioHandler.setRepeatMode(AudioServiceRepeatMode.group)
-  //                 : audioHandler.setRepeatMode(AudioServiceRepeatMode.none);
-  //       },
-  //       icon: snapshot.data!.index == 0
-  //           ? const Icon(Icons.repeat_rounded)
-  //           : snapshot.data!.index == 1
-  //               ? const Icon(Icons.repeat_one_rounded)
-  //               : const Icon(Icons.repeat_on),
-  //     );
-  //   },
-  // );
-
-  return Consumer(
-    builder: (context, ref, child) {
-      return ref.watch(repeatModeStreamProvider).when(
-            data: (data) {
-              final repeatMode = data;
-              const icons = [
-                Icon(Icons.repeat, color: Colors.grey),
-                Icon(Icons.repeat, color: Colors.orange),
-                Icon(Icons.repeat_one, color: Colors.orange),
-              ];
-              const cycleModes = [
-                AudioServiceRepeatMode.none,
-                AudioServiceRepeatMode.all,
-                AudioServiceRepeatMode.one,
-              ];
-              final index = cycleModes.indexOf(repeatMode);
-              return IconButton(
-                icon: icons[index],
-                onPressed: () {
-                  audioHandler.setRepeatMode(cycleModes[
-                      (cycleModes.indexOf(repeatMode) + 1) %
-                          cycleModes.length]);
-                },
-              );
-            },
-            error: (error, stackTrace) =>
-                IconButton(onPressed: () {}, icon: const Icon(Icons.repeat)),
-            loading: () =>
-                IconButton(onPressed: () {}, icon: const Icon(Icons.repeat)),
-          );
+  return StreamBuilder<AudioServiceRepeatMode>(
+    stream:
+        audioHandler.playbackState.map((state) => state.repeatMode).distinct(),
+    builder: (context, snapshot) {
+      final repeatMode = snapshot.data ?? AudioServiceRepeatMode.none;
+      const icons = [
+        Icon(Icons.repeat, color: Colors.grey),
+        Icon(Icons.repeat, color: Colors.orange),
+        Icon(Icons.repeat_one, color: Colors.orange),
+      ];
+      const cycleModes = [
+        AudioServiceRepeatMode.none,
+        AudioServiceRepeatMode.all,
+        AudioServiceRepeatMode.one,
+      ];
+      final index = cycleModes.indexOf(repeatMode);
+      return IconButton(
+        icon: icons[index],
+        onPressed: () {
+          audioHandler.setRepeatMode(cycleModes[
+              (cycleModes.indexOf(repeatMode) + 1) % cycleModes.length]);
+        },
+      );
     },
   );
 }
