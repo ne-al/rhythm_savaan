@@ -4,8 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:rhythm_savaan/core/models/freezed_models/helper_models/songs_model.dart';
+import 'package:rhythm_savaan/core/services/music_service.dart';
 import 'package:rhythm_savaan/main.dart';
-import 'package:rxdart/rxdart.dart';
 
 class MusicPlayer extends StatefulWidget {
   final SongsModel songsModel;
@@ -39,41 +39,25 @@ class _MusicPlayerState extends State<MusicPlayer> {
         'url': data.downloadUrl[4].link,
       },
     );
+
+    //! initializing the commonly used values
     int queueLength = audioHandler.queue.value.length;
     List<MediaItem> queueValue = audioHandler.queue.value;
+
     //! it skip when the playing song is already in queue so it wont have 2 or more same song in queue
-    if (queueValue.contains(item)) return;
+    //! also after && it checks if currently user in playing any playlist
+    //! if user is playing any playlist then it remove all the songs from the playlist and add the currently requested song to the queue
+    if (queueValue.contains(item) && queueLength <= 1) return;
 
     //! it remove current song from queue and add new one when there is song change request done by the user
     if (queueLength <= 1 && !queueValue.contains(item)) {
       audioHandler.removeQueueItemAt(0);
     }
 
-    //! if user request a new song then remove all song with queue songs and only store that song in queue
-    //todo
-
     //! add single song to queue then play it
     await audioHandler.addQueueItem(item);
     audioHandler.play();
   }
-
-  //! streaming the buffered position of the playing song
-  Stream<Duration> get _bufferedPositionStream => audioHandler.playbackState
-      .map((state) => state.bufferedPosition)
-      .distinct();
-
-  //! streaming the duration of the playing song
-  Stream<Duration?> get _durationStream =>
-      audioHandler.mediaItem.map((item) => item?.duration).distinct();
-
-  //! streaming the position data of all combine things of the playing song
-  Stream<PositionData> get _positionDataStream =>
-      Rx.combineLatest3<Duration, Duration, Duration?, PositionData>(
-          AudioService.position,
-          _bufferedPositionStream,
-          _durationStream,
-          (position, bufferedPosition, duration) => PositionData(
-              position, bufferedPosition, duration ?? Duration.zero));
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +69,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
           children: [
             _musicThumbnailTitleWidget(widget.songsModel, width),
             const Gap(24),
-            _progressBarController(_positionDataStream, width),
+            progressBarController(positionDataStream, width, false),
             const Gap(12),
             _musicControllers(),
           ],
@@ -143,7 +127,8 @@ Widget _musicThumbnailTitleWidget(SongsModel data, double width) {
   );
 }
 
-Widget _progressBarController(Stream<PositionData> data, double width) {
+Widget progressBarController(
+    Stream<PositionData> data, double width, bool isMiniPlayer) {
   return StreamBuilder<PositionData>(
     stream: data,
     builder: (context, snapshot) {
@@ -153,8 +138,12 @@ Widget _progressBarController(Stream<PositionData> data, double width) {
       Duration total = positionData.duration;
       Duration buffered = positionData.bufferedPosition;
       return SizedBox(
-        width: width * 0.9,
+        width: !isMiniPlayer ? width * 0.9 : width * 0.7,
         child: ProgressBar(
+          barHeight: isMiniPlayer ? 2 : 5,
+          thumbRadius: isMiniPlayer ? 6 : 8,
+          timeLabelLocation:
+              isMiniPlayer ? TimeLabelLocation.none : TimeLabelLocation.sides,
           progress: progress,
           total: total,
           buffered: buffered,

@@ -84,3 +84,13 @@ final homeChartsRecommendationProvider =
 
   return data;
 });
+
+final isPlayingProvider = StreamProvider<bool>((ref) {
+  return audioHandler.playbackState.map((event) {
+    if (!event.playing) {
+      return audioHandler.queue.value.isNotEmpty;
+    } else {
+      return event.playing;
+    }
+  });
+});
