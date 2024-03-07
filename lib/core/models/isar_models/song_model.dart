@@ -6,6 +6,7 @@ part 'song_model.g.dart';
 @Collection()
 class SongModel {
   Id id = Isar.autoIncrement;
+  late String songId;
   late String title;
   late String author;
   late String duration;

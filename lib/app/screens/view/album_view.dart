@@ -33,7 +33,7 @@ class AlbumView extends ConsumerWidget {
                     );
                   },
                   error: (error, stackTrace) => Center(
-                    child: Text('$error'),
+                    child: Text('$error\n$stackTrace'),
                   ),
                   loading: () => const Center(
                     child: CircularProgressIndicator.adaptive(),
@@ -115,7 +115,11 @@ Widget _playAll(List<SongsModel?> songsList) {
     songsItem.add(item);
   }
   return Padding(
-    padding: const EdgeInsets.all(8.0),
+    padding: const EdgeInsets.only(
+      bottom: 12,
+      left: 8,
+      right: 8,
+    ),
     child: Row(
       children: [
         OutlinedButton.icon(
@@ -124,8 +128,6 @@ Widget _playAll(List<SongsModel?> songsList) {
             if (audioHandler.queue.value.isNotEmpty) {
               audioHandler.queue.value.clear();
             }
-
-            // if (audioHandler.queue.value.)
 
             audioHandler.addQueueItems(songsItem);
             audioHandler.play();
@@ -154,8 +156,6 @@ Widget _playAll(List<SongsModel?> songsList) {
 
 Widget _playlistView(
     String name, String thumbnail, List<SongsModel?> songsData, double height) {
-  // String thumbnail = playlistData.image[2].link;
-  // var songData = playlistData.songs;
   return CustomScrollView(
     slivers: [
       SliverAppBar(
@@ -165,7 +165,32 @@ Widget _playlistView(
         ),
       ),
       SliverToBoxAdapter(
-        child: _playAll(songsData),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 12,
+            horizontal: 8,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                style: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.2,
+                ),
+              ),
+              const Gap(12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  _playAll(songsData),
+                ],
+              )
+            ],
+          ),
+        ),
       ),
       SliverList.builder(
         itemCount: songsData.length,

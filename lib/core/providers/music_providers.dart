@@ -22,6 +22,11 @@ final albumByIdProvider =
   return await MusicApi().getSongFromAlbumId(int.parse(albumId));
 });
 
+// final trendingAlbumByIdProvider =
+//     FutureProvider.family.autoDispose<AlbumModel, String>((ref, albumId) async {
+//   return await MusicApi().getSongFromAlbumId(int.parse(albumId));
+// });
+
 final songByIdProvider =
     FutureProvider.family.autoDispose<SongsModel, String>((ref, songId) async {
   return await MusicApi().getSongFromSongId(songId);
@@ -38,6 +43,18 @@ final homeAlbumRecommendationProvider =
   var response = await MusicApi().getHomeRecommendation();
 
   for (var album in response['data']['albums']) {
+    data.add(AlbumModel.fromJson(album));
+  }
+
+  return data;
+});
+
+final homeTrendingAlbumRecommendationProvider =
+    FutureProvider.autoDispose<List<AlbumModel>>((ref) async {
+  List<AlbumModel> data = [];
+  var response = await MusicApi().getHomeRecommendation();
+
+  for (var album in response['data']['trending']['albums']) {
     data.add(AlbumModel.fromJson(album));
   }
 
