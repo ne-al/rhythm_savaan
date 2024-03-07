@@ -15,71 +15,73 @@ class MiniPlayer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Visibility(
-      visible: ref.watch(isPlayingProvider).when(
-                data: (data) => data,
-                error: (error, stackTrace) => false,
-                loading: () => false,
-              ) ??
-          false,
-      child: StreamBuilder<MediaItem?>(
-        stream: audioHandler.mediaItem,
-        builder: (context, snapshot) {
-          var data = snapshot.data;
-          return ref.watch(songByIdProvider(data?.id ?? '')).when(
-                data: (data) => GestureDetector(
-                  onTap: () async {
-                    if (!context.mounted) return;
-                    pushNewScreen(
-                      context,
-                      screen: MusicPlayer(
-                        songsModel: data,
-                      ),
-                    );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      borderRadius: BorderRadius.circular(
-                        6,
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: CachedNetworkImage(
-                            imageUrl: snapshot.data!.artUri.toString(),
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
+        visible: ref.watch(isPlayingProvider).when(
+                  data: (data) => data,
+                  error: (error, stackTrace) => false,
+                  loading: () => false,
+                ) ??
+            false,
+        child: ref.watch(mediaItemProvider).when(
+              data: (data) {
+                return ref.watch(songByIdProvider(data?.id ?? '')).when(
+                      data: (songsData) => GestureDetector(
+                        onTap: () async {
+                          if (!context.mounted) return;
+                          pushNewScreen(
+                            context,
+                            screen: MusicPlayer(
+                              songsModel: songsData,
+                            ),
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surface,
+                            borderRadius: BorderRadius.circular(
+                              6,
+                            ),
                           ),
-                        ),
-                        const Gap(12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            mainAxisSize: MainAxisSize.min,
+                          child: Row(
                             children: [
-                              Text(snapshot.data?.title ?? 'Null'),
-                              const Gap(4),
-                              progressBarController(positionDataStream,
-                                  MediaQuery.of(context).size.width, true),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child: CachedNetworkImage(
+                                  imageUrl: data?.artUri.toString() ?? '',
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              const Gap(12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(data?.title ?? 'Null'),
+                                    const Gap(4),
+                                    progressBarController(
+                                        positionDataStream,
+                                        MediaQuery.of(context).size.width,
+                                        true),
+                                  ],
+                                ),
+                              ),
+                              _musicControllers()
                             ],
                           ),
                         ),
-                        _musicControllers()
-                      ],
-                    ),
-                  ),
-                ),
-                error: (error, stackTrace) => Container(),
-                loading: () => Container(),
-              );
-        },
-      ),
-    );
+                      ),
+                      error: (error, stackTrace) => Container(),
+                      loading: () => Container(),
+                    );
+              },
+              error: (error, stackTrace) => Container(),
+              loading: () => Container(),
+            ));
   }
 }
 

@@ -348,6 +348,13 @@ class HomePage extends ConsumerWidget {
                         ),
                       ),
                     ),
+                    ref.watch(isPlayingProvider).when(
+                          data: (data) {
+                            return data ? Gap(height * 0.07) : Container();
+                          },
+                          error: (error, stackTrace) => Container(),
+                          loading: () => Container(),
+                        ),
                   ],
                 ),
               ),

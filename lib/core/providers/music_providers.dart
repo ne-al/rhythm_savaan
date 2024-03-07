@@ -80,7 +80,7 @@ final homeChartsRecommendationProvider =
   return data;
 });
 
-final isPlayingProvider = StreamProvider<bool>((ref) {
+final isPlayingProvider = StreamProvider.autoDispose<bool>((ref) {
   return audioHandler.playbackState.map((event) {
     if (!event.playing) {
       return audioHandler.queue.value.isNotEmpty;
@@ -88,4 +88,8 @@ final isPlayingProvider = StreamProvider<bool>((ref) {
       return event.playing;
     }
   });
+});
+
+final mediaItemProvider = StreamProvider.autoDispose<MediaItem?>((ref) {
+  return audioHandler.mediaItem;
 });

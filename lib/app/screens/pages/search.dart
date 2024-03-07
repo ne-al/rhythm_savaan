@@ -26,6 +26,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         title: TextField(
@@ -82,6 +83,13 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             const Gap(20),
             const Credit(),
             const Gap(36),
+            ref.watch(isPlayingProvider).when(
+                  data: (data) {
+                    return data ? Gap(height * 0.07) : Container();
+                  },
+                  error: (error, stackTrace) => Container(),
+                  loading: () => Container(),
+                )
           ],
         ),
       ),
