@@ -49,6 +49,8 @@ class _MusicPlayerState extends State<MusicPlayer> {
     int queueLength = audioHandler.queue.value.length;
     List<MediaItem> queueValue = audioHandler.queue.value;
 
+    IsarServices().addSongToLastSession(data.id, data.name);
+
     //! if it is from miniplayer then it skip all change to audio handler and keep all the data same
     if (widget.fromMiniplayer == true) {
       return;

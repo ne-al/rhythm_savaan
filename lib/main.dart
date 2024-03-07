@@ -4,7 +4,6 @@ import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rhythm_savaan/app/components/bottom_navbar/bottom_navbar.dart';
 import 'package:rhythm_savaan/core/services/audio_service.dart';
-import 'package:rhythm_savaan/core/services/isar_services.dart';
 
 late AudioHandler audioHandler;
 void main() async {
@@ -19,7 +18,6 @@ void main() async {
     ),
   );
   await FlutterDisplayMode.setHighRefreshRate();
-  IsarServices();
   runApp(
     const ProviderScope(
       child: RhythmSaavan(),

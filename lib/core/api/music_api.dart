@@ -36,6 +36,22 @@ class MusicApi {
     return SongsModel.fromJson(data['data'][0]);
   }
 
+  //! fetch songs from their id
+  Future<List<SongsModel>> getSongsFromSongIds(String songId) async {
+    List<SongsModel> songsList = [];
+    if (songId.isNotEmpty) {
+      String apiUrl = '$api/songs';
+      var response = await dio.get(apiUrl, queryParameters: {'id': songId});
+      Map<String, dynamic> data = response.data;
+
+      for (var song in data['data']) {
+        songsList.add(SongsModel.fromJson(song));
+      }
+    }
+
+    return songsList;
+  }
+
   //! fetch playlist by its id
   Future<SaavanPlaylistModel> getPlaylistFromPlaylistId(
       String playlistId) async {
