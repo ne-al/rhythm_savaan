@@ -38,14 +38,12 @@ class HomePage extends ConsumerWidget {
             ),
           ),
           SliverToBoxAdapter(
-            child: lastSessionWidget(ref),
-          ),
-          SliverToBoxAdapter(
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 40),
                 child: Column(
                   children: [
+                    lastSessionWidget(ref, context),
                     const Padding(
                       padding:
                           EdgeInsets.symmetric(vertical: 14, horizontal: 8),
@@ -351,6 +349,7 @@ class HomePage extends ConsumerWidget {
                         ),
                       ),
                     ),
+
                     ref.watch(isPlayingProvider).when(
                           data: (data) {
                             return data ? Gap(height * 0.07) : Container();
