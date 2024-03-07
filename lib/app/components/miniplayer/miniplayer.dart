@@ -1,6 +1,8 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
@@ -14,6 +16,7 @@ class MiniPlayer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    double width = MediaQuery.of(context).size.width;
     return Visibility(
         visible: ref.watch(isPlayingProvider).when(
                   data: (data) => data,
@@ -62,12 +65,41 @@ class MiniPlayer extends ConsumerWidget {
                                       MainAxisAlignment.spaceAround,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Text(data?.title ?? 'Null'),
+                                    SizedBox(
+                                      width: width * 0.45,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            songsData.name,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey.shade200,
+                                            ),
+                                          ),
+                                          Text(
+                                            songsData.primaryArtists,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.grey.shade500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                     const Gap(4),
                                     progressBarController(
-                                        positionDataStream,
-                                        MediaQuery.of(context).size.width,
-                                        true),
+                                      positionDataStream,
+                                      MediaQuery.of(context).size.width,
+                                      true,
+                                    ),
                                   ],
                                 ),
                               ),

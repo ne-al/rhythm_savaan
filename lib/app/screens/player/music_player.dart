@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:rhythm_savaan/core/models/freezed_models/helper_models/songs_model.dart';
+import 'package:rhythm_savaan/core/services/isar_services.dart';
 import 'package:rhythm_savaan/core/services/music_service.dart';
 import 'package:rhythm_savaan/main.dart';
 
@@ -80,7 +81,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
             const Gap(24),
             progressBarController(positionDataStream, width, false),
             const Gap(12),
-            _musicControllers(),
+            _musicControllers(widget.songsModel),
           ],
         ),
       ),
@@ -149,8 +150,13 @@ Widget progressBarController(
       return SizedBox(
         width: !isMiniPlayer ? width * 0.9 : width * 0.7,
         child: ProgressBar(
-          barHeight: isMiniPlayer ? 2 : 5,
-          thumbRadius: isMiniPlayer ? 6 : 8,
+          barHeight: isMiniPlayer ? 2.5 : 3,
+          thumbRadius: isMiniPlayer ? 4 : 6,
+          timeLabelType: TimeLabelType.totalTime,
+          thumbColor: Theme.of(context).colorScheme.secondary,
+          progressBarColor: Theme.of(context).colorScheme.secondary,
+          bufferedBarColor:
+              Theme.of(context).colorScheme.primary.withOpacity(0.2),
           timeLabelLocation:
               isMiniPlayer ? TimeLabelLocation.none : TimeLabelLocation.sides,
           progress: progress,
@@ -163,7 +169,7 @@ Widget progressBarController(
   );
 }
 
-Widget _musicControllers() {
+Widget _musicControllers(SongsModel songData) {
   return StreamBuilder<PlaybackState?>(
     stream: audioHandler.playbackState,
     builder: (context, snapshot) {
@@ -197,7 +203,9 @@ Widget _musicControllers() {
             icon: const Icon(Icons.skip_next_rounded),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () async {
+              await IsarServices().addSongToFavorite(songData);
+            },
             icon: const Icon(Icons.favorite_outline_rounded),
           ),
         ],
@@ -212,10 +220,10 @@ Widget _repeatMode() {
         audioHandler.playbackState.map((state) => state.repeatMode).distinct(),
     builder: (context, snapshot) {
       final repeatMode = snapshot.data ?? AudioServiceRepeatMode.none;
-      const icons = [
-        Icon(Icons.repeat, color: Colors.grey),
-        Icon(Icons.repeat, color: Colors.orange),
-        Icon(Icons.repeat_one, color: Colors.orange),
+      final icons = [
+        const Icon(Icons.repeat, color: Colors.grey),
+        Icon(Icons.repeat, color: Theme.of(context).colorScheme.secondary),
+        Icon(Icons.repeat_one, color: Theme.of(context).colorScheme.secondary),
       ];
       const cycleModes = [
         AudioServiceRepeatMode.none,

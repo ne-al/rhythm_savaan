@@ -1,5 +1,6 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:rhythm_savaan/core/models/freezed_models/helper_models/songs_model.dart';
 import 'package:rhythm_savaan/core/models/isar_models/playlist_model.dart';
 import 'package:rhythm_savaan/core/models/isar_models/song_model.dart';
 import 'package:rhythm_savaan/core/models/isar_models/user_model.dart';
@@ -33,6 +34,17 @@ class IsarServices {
   //! fetch all songs of a playlist
 
   //! add song to playlist
+  Future<void> addSongToFavorite(SongsModel songData) async {
+    final isar = await db;
+    var fetchData =
+        await isar.songModels.filter().songIdEqualTo(songData.id).findAll();
+
+    if (fetchData.isNotEmpty) return;
+
+    SongModel song = SongModel()..songId = songData.id;
+
+    isar.writeTxnSync(() => isar.songModels.putSync(song));
+  }
 
   //! remove song from playlist
 
