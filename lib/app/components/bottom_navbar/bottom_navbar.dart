@@ -6,7 +6,6 @@ import 'package:rhythm_savaan/app/screens/pages/home.dart';
 import 'package:rhythm_savaan/app/screens/pages/playlist.dart';
 import 'package:rhythm_savaan/app/screens/pages/search.dart';
 import 'package:rhythm_savaan/app/screens/pages/settings.dart';
-import 'package:rhythm_savaan/core/providers/music_providers.dart';
 
 class BottomNavBar extends ConsumerStatefulWidget {
   const BottomNavBar({super.key});
@@ -64,16 +63,9 @@ class _BottomNavBarState extends ConsumerState<BottomNavBar> {
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: PersistentTabView(
-        floatingActionButton: Visibility(
-          visible: ref.watch(isPlayingProvider).when(
-                data: (data) => data,
-                error: (error, stackTrace) => false,
-                loading: () => false,
-              ),
-          child: SizedBox(
-            width: width * 0.96,
-            child: const MiniPlayer(),
-          ),
+        floatingActionButton: SizedBox(
+          width: width * 0.955,
+          child: const MiniPlayer(),
         ),
         context,
         controller: _controller,

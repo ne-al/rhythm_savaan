@@ -22,11 +22,6 @@ final albumByIdProvider =
   return await MusicApi().getSongFromAlbumId(int.parse(albumId));
 });
 
-// final trendingAlbumByIdProvider =
-//     FutureProvider.family.autoDispose<AlbumModel, String>((ref, albumId) async {
-//   return await MusicApi().getSongFromAlbumId(int.parse(albumId));
-// });
-
 final songByIdProvider =
     FutureProvider.family.autoDispose<SongsModel, String>((ref, songId) async {
   return await MusicApi().getSongFromSongId(songId);

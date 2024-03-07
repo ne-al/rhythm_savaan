@@ -18,6 +18,10 @@ class IsarServices {
     isar.writeTxnSync(() => isar.users.putSync(model));
   }
 
+  //! get all playlist
+
+  //! search playlist by name
+
   //! create a new playlist
 
   //! edit playlist by id
@@ -25,6 +29,8 @@ class IsarServices {
   //! delete playlist by id
 
   //! fetch playlist by id
+
+  //! fetch all songs of a playlist
 
   //! add song to playlist
 
