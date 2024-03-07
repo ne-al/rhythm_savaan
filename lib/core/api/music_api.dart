@@ -10,8 +10,9 @@ class MusicApi {
   //! fetch home recommendation music
   Future<Map<String, dynamic>> getHomeRecommendation() async {
     String apiUrl = '$api/modules';
-    var response = await dio.get(apiUrl,
-        queryParameters: {'language': 'hindi,punjabi,bhojpuri,english'});
+    var response = await dio.get(apiUrl, queryParameters: {
+      'language': 'hindi,punjabi,bhojpuri,english,haryanvi'
+    });
     Map<String, dynamic> data = response.data;
 
     return data;
