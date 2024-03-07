@@ -2,8 +2,10 @@
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:rhythm_savaan/app/widget/custom_physics.dart';
 import 'package:rhythm_savaan/app/widget/song_tile.dart';
+import 'package:rhythm_savaan/core/constants/const.dart';
 import 'package:rhythm_savaan/core/providers/music_providers.dart';
 
 Widget lastSessionWidget(WidgetRef ref, BuildContext context) {
@@ -11,6 +13,8 @@ Widget lastSessionWidget(WidgetRef ref, BuildContext context) {
         data: (lastSessionData) {
           List<String> dataId = lastSessionData.map((e) => e.songId).toList();
           String songIds = dataId.join(',');
+
+          Logger().d(songIds);
 
           return ref.watch(lastSessionSongByIdsProvider(songIds)).when(
                 data: (data) {
@@ -83,14 +87,14 @@ Widget lastSessionWidget(WidgetRef ref, BuildContext context) {
                         )
                       : Container();
                 },
-                error: (error, stackTrace) => Center(
-                  child: Text('Songs Error\n$error\n$stackTrace'),
+                error: (error, stackTrace) => const Center(
+                  child: Text(unknownError),
                 ),
                 loading: () => const CircularProgressIndicator.adaptive(),
               );
         },
-        error: (error, stackTrace) => Center(
-          child: Text('Error\n$error'),
+        error: (error, stackTrace) => const Center(
+          child: Text(unknownError),
         ),
         loading: () => const CircularProgressIndicator.adaptive(),
       );

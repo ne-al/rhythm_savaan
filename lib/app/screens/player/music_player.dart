@@ -56,14 +56,28 @@ class _MusicPlayerState extends State<MusicPlayer> {
       return;
     }
 
+    if (queueValue.contains(item) && queueLength <= 1) return;
+
+    //! it checks if the queue length is greater than 1 and if the current media item i.e current song
+    //! available in queue list if it does exists then get the index where the current exists
+    //! and pass it to audio handler so audio handler can later play it
+    if (queueLength > 1 && queueValue.contains(item)) {
+      int index = queueValue.indexOf(item);
+      //! skip to the queue
+
+      await audioHandler.skipToQueueItem(index);
+      audioHandler.play();
+
+      return;
+    }
+
     //! it skip when the playing song is already in queue so it wont have 2 or more same song in queue
     //! also after && it checks if currently user in playing any playlist
     //! if user is playing any playlist then it remove all the songs from the playlist and add the currently requested song to the queue
-    if (queueValue.contains(item) && queueLength <= 1) return;
 
     //! it remove current song from queue and add new one when there is song change request done by the user
     if (queueLength <= 1 && !queueValue.contains(item)) {
-      audioHandler.removeQueueItemAt(0);
+      await audioHandler.removeQueueItemAt(0);
     }
 
     //! add single song to queue then play it
