@@ -1,6 +1,8 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:rhythm_savaan/app/widget/song_tile.dart';
@@ -20,6 +22,7 @@ class AlbumView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SafeArea(
         child: type == 'album'
@@ -30,6 +33,8 @@ class AlbumView extends ConsumerWidget {
                       albumData.image[2]!.link,
                       albumData.songs,
                       height,
+                      width,
+                      context,
                     );
                   },
                   error: (error, stackTrace) => Center(
@@ -59,6 +64,8 @@ class AlbumView extends ConsumerWidget {
                               playlistData.image[2].link,
                               playlistData.songs,
                               height,
+                              width,
+                              context,
                             );
                           },
                           error: (error, stackTrace) => Center(
@@ -114,15 +121,10 @@ Widget _playAll(List<SongsModel?> songsList) {
 
     songsItem.add(item);
   }
-  return Padding(
-    padding: const EdgeInsets.only(
-      bottom: 12,
-      left: 8,
-      right: 8,
-    ),
+  return Expanded(
     child: Row(
       children: [
-        OutlinedButton.icon(
+        ElevatedButton.icon(
           icon: const Icon(Icons.play_arrow_rounded),
           onPressed: () {
             if (audioHandler.queue.value.isNotEmpty) {
@@ -134,61 +136,96 @@ Widget _playAll(List<SongsModel?> songsList) {
           },
           label: const Text('Play all'),
         ),
-        const Gap(12),
-        ElevatedButton.icon(
-          icon: const Icon(Icons.shuffle_rounded),
-          onPressed: () {
-            if (audioHandler.queue.value.isNotEmpty) {
-              audioHandler.queue.value.clear();
-            }
+        const Gap(6),
+        SizedBox(
+          width: 65,
+          child: IconButton.outlined(
+            icon: const Icon(Icons.shuffle_rounded),
+            onPressed: () {
+              if (audioHandler.queue.value.isNotEmpty) {
+                audioHandler.queue.value.clear();
+              }
 
-            // if (audioHandler.queue.value.)
-            audioHandler.setShuffleMode(AudioServiceShuffleMode.all);
-            audioHandler.addQueueItems(songsItem);
-            audioHandler.play();
-          },
-          label: const Text('Shuffle'),
+              audioHandler.setShuffleMode(AudioServiceShuffleMode.all);
+              audioHandler.addQueueItems(songsItem);
+              audioHandler.play();
+            },
+          ),
         ),
       ],
     ),
   );
 }
 
-Widget _playlistView(
-    String name, String thumbnail, List<SongsModel?> songsData, double height) {
+Widget _playlistView(String name, String thumbnail, List<SongsModel?> songsData,
+    double height, double width, BuildContext context) {
   return CustomScrollView(
     slivers: [
       SliverAppBar(
-        expandedHeight: height * 0.45,
+        expandedHeight: height * 0.25,
         flexibleSpace: FlexibleSpaceBar(
-          background: CachedNetworkImage(imageUrl: thumbnail),
-        ),
-      ),
-      SliverToBoxAdapter(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 12,
-            horizontal: 8,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                name,
-                style: const TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.2,
+          background: Container(
+            color: Theme.of(context).colorScheme.background,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: CachedNetworkImage(
+                          imageUrl: thumbnail,
+                          fit: BoxFit.cover,
+                          height: height * 0.14,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              name,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                            Text(
+                              'Songs: ${songsData.length}',
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              const Gap(12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  _playAll(songsData),
-                ],
-              )
-            ],
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      _playAll(songsData),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
