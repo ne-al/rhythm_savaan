@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+import 'package:popover/popover.dart';
 import 'package:rhythm_savaan/app/screens/player/music_player.dart';
 import 'package:rhythm_savaan/core/models/freezed_models/helper_models/songs_model.dart';
 
@@ -43,6 +44,44 @@ class SongTile extends StatelessWidget {
           data.primaryArtists,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
+        ),
+        trailing: Builder(
+          builder: (context) {
+            return IconButton(
+              onPressed: () {
+                showPopover(
+                  backgroundColor: Theme.of(context).colorScheme.surface,
+                  context: context,
+                  bodyBuilder: (context) {
+                    return SizedBox(
+                      height: 180,
+                      width: 160,
+                      child: Column(
+                        children: [
+                          TextButton.icon(
+                            onPressed: () {},
+                            icon: const Icon(Icons.playlist_add_rounded),
+                            label: const Text('Add to queue'),
+                          ),
+                          TextButton.icon(
+                            onPressed: () {},
+                            icon: const Icon(Icons.favorite),
+                            label: const Text('Add to favorite'),
+                          ),
+                          TextButton.icon(
+                            onPressed: () {},
+                            icon: const Icon(Icons.album_rounded),
+                            label: const Text('Add to playlist'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+              icon: const Icon(Icons.more_vert_rounded),
+            );
+          },
         ),
       ),
     );

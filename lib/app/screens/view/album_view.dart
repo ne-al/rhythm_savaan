@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:rhythm_savaan/app/widget/song_tile.dart';
-import 'package:rhythm_savaan/core/models/freezed_models/album_model.dart';
 import 'package:rhythm_savaan/core/models/freezed_models/helper_models/songs_model.dart';
-import 'package:rhythm_savaan/core/models/freezed_models/playlist_model.dart';
 import 'package:rhythm_savaan/core/providers/music_providers.dart';
 import 'package:rhythm_savaan/main.dart';
 
@@ -27,7 +25,12 @@ class AlbumView extends ConsumerWidget {
         child: type == 'album'
             ? ref.watch(albumByIdProvider(id)).when(
                   data: (albumData) {
-                    return _albumView(albumData, height);
+                    return _playlistView(
+                      albumData.name,
+                      albumData.image[2]!.link,
+                      albumData.songs,
+                      height,
+                    );
                   },
                   error: (error, stackTrace) => Center(
                     child: Text('$error'),
@@ -51,7 +54,12 @@ class AlbumView extends ConsumerWidget {
                 : type == 'playlist'
                     ? ref.watch(playlistByIdProvider(id)).when(
                           data: (playlistData) {
-                            return _playlistView(playlistData, height);
+                            return _playlistView(
+                              playlistData.name,
+                              playlistData.image[2].link,
+                              playlistData.songs,
+                              height,
+                            );
                           },
                           error: (error, stackTrace) => Center(
                             child: Text('$error'),
@@ -66,26 +74,6 @@ class AlbumView extends ConsumerWidget {
       ),
     );
   }
-}
-
-Widget _albumView(AlbumModel albumData, double height) {
-  return Column(
-    children: [
-      SizedBox(
-        height: height * 0.45,
-        child: CachedNetworkImage(imageUrl: albumData.image[2]!.link),
-      ),
-      const Gap(12),
-      ListView.builder(
-        shrinkWrap: true,
-        itemCount: albumData.songs.length,
-        itemBuilder: (BuildContext context, int index) {
-          var data = albumData.songs[index];
-          return SongTile(data: data!);
-        },
-      ),
-    ],
-  );
 }
 
 Widget _songView(SongsModel songData, double height) {
@@ -111,48 +99,11 @@ Widget _songView(SongsModel songData, double height) {
   );
 }
 
-Widget _playlistView(SaavanPlaylistModel playlistData, double height) {
-  return SingleChildScrollView(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: height * 0.45,
-          child: CachedNetworkImage(
-            imageUrl: playlistData.image[2].link,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-          child: Text(
-            playlistData.name,
-            style: const TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.2,
-            ),
-          ),
-        ),
-        _playAll(playlistData.songs),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: playlistData.songs.length,
-          itemBuilder: (BuildContext context, int index) {
-            var data = playlistData.songs[index];
-            return SongTile(data: data);
-          },
-        ),
-      ],
-    ),
-  );
-}
-
-Widget _playAll(List<SongsModel> songsList) {
+Widget _playAll(List<SongsModel?> songsList) {
   List<MediaItem> songsItem = [];
   for (var song in songsList) {
     MediaItem item = MediaItem(
-        id: song.id,
+        id: song!.id,
         title: song.name,
         artUri: Uri.parse(song.image[2].link),
         duration: Duration(seconds: int.parse(song.duration)),
@@ -198,5 +149,31 @@ Widget _playAll(List<SongsModel> songsList) {
         ),
       ],
     ),
+  );
+}
+
+Widget _playlistView(
+    String name, String thumbnail, List<SongsModel?> songsData, double height) {
+  // String thumbnail = playlistData.image[2].link;
+  // var songData = playlistData.songs;
+  return CustomScrollView(
+    slivers: [
+      SliverAppBar(
+        expandedHeight: height * 0.45,
+        flexibleSpace: FlexibleSpaceBar(
+          background: CachedNetworkImage(imageUrl: thumbnail),
+        ),
+      ),
+      SliverToBoxAdapter(
+        child: _playAll(songsData),
+      ),
+      SliverList.builder(
+        itemCount: songsData.length,
+        itemBuilder: (context, index) {
+          var data = songsData[index];
+          return SongTile(data: data!);
+        },
+      )
+    ],
   );
 }
