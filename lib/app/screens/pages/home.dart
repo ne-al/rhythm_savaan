@@ -2,9 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:logger/logger.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:rhythm_savaan/app/screens/view/album_view.dart';
+import 'package:rhythm_savaan/core/constants/const.dart';
 import 'package:rhythm_savaan/core/providers/music_providers.dart';
 
 class HomePage extends ConsumerWidget {
@@ -107,9 +107,8 @@ class HomePage extends ConsumerWidget {
                                   );
                                 },
                                 error: (error, stackTrace) {
-                                  Logger().w('$stackTrace');
-                                  return Center(
-                                    child: Text('$error\n\n$stackTrace'),
+                                  return const Center(
+                                    child: Text(unknownError),
                                   );
                                 },
                                 loading: () => const Center(
@@ -184,8 +183,8 @@ class HomePage extends ConsumerWidget {
                                     },
                                   );
                                 },
-                                error: (error, stackTrace) => Center(
-                                  child: Text('$error'),
+                                error: (error, stackTrace) => const Center(
+                                  child: Text(unknownError),
                                 ),
                                 loading: () => const Center(
                                   child: CircularProgressIndicator.adaptive(),
@@ -261,8 +260,8 @@ class HomePage extends ConsumerWidget {
                                     },
                                   );
                                 },
-                                error: (error, stackTrace) => Center(
-                                  child: Text('$error'),
+                                error: (error, stackTrace) => const Center(
+                                  child: Text(unknownError),
                                 ),
                                 loading: () => const Center(
                                   child: CircularProgressIndicator.adaptive(),
@@ -338,8 +337,8 @@ class HomePage extends ConsumerWidget {
                                     },
                                   );
                                 },
-                                error: (error, stackTrace) => Center(
-                                  child: Text('$error'),
+                                error: (error, stackTrace) => const Center(
+                                  child: Text(unknownError),
                                 ),
                                 loading: () => const Center(
                                   child: CircularProgressIndicator.adaptive(),

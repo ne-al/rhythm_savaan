@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:rhythm_savaan/app/widget/song_tile.dart';
+import 'package:rhythm_savaan/core/constants/const.dart';
 import 'package:rhythm_savaan/core/models/freezed_models/helper_models/songs_model.dart';
 import 'package:rhythm_savaan/core/providers/music_providers.dart';
 import 'package:rhythm_savaan/main.dart';
@@ -35,8 +36,8 @@ class AlbumView extends ConsumerWidget {
                       context,
                     );
                   },
-                  error: (error, stackTrace) => Center(
-                    child: Text('$error\n$stackTrace'),
+                  error: (error, stackTrace) => const Center(
+                    child: Text(unknownError),
                   ),
                   loading: () => const Center(
                     child: CircularProgressIndicator.adaptive(),
@@ -47,8 +48,8 @@ class AlbumView extends ConsumerWidget {
                       data: (songData) {
                         return _songView(songData, height, context);
                       },
-                      error: (error, stackTrace) => Center(
-                        child: Text('$error'),
+                      error: (error, stackTrace) => const Center(
+                        child: Text(unknownError),
                       ),
                       loading: () => const Center(
                         child: CircularProgressIndicator.adaptive(),
@@ -66,8 +67,8 @@ class AlbumView extends ConsumerWidget {
                               context,
                             );
                           },
-                          error: (error, stackTrace) => Center(
-                            child: Text('$error'),
+                          error: (error, stackTrace) => const Center(
+                            child: Text(unknownError),
                           ),
                           loading: () => const Center(
                             child: CircularProgressIndicator.adaptive(),
@@ -167,27 +168,6 @@ Widget _songView(SongsModel songData, double height, BuildContext context) {
       )
     ],
   );
-
-  // Column(
-  //   children: [
-  //     SizedBox(
-  //       height: height * 0.45,
-  //       child: CachedNetworkImage(imageUrl: songData.image[2].link),
-  //     ),
-  //     const Gap(6),
-  //     // _playAll(),
-  //     const Row(
-  //       children: [Expanded(child: Divider())],
-  //     ),
-  //     ListView.builder(
-  //       shrinkWrap: true,
-  //       itemCount: 1,
-  //       itemBuilder: (BuildContext context, int index) {
-  //         return SongTile(data: songData);
-  //       },
-  //     ),
-  //   ],
-  // );
 }
 
 Widget _playAll(List<SongsModel?> songsList) {

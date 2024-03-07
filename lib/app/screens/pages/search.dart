@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:rhythm_savaan/app/widget/credit.dart';
 import 'package:rhythm_savaan/app/widget/song_tile.dart';
+import 'package:rhythm_savaan/core/constants/const.dart';
 import 'package:rhythm_savaan/core/providers/music_providers.dart';
 
 class SearchPage extends ConsumerStatefulWidget {
@@ -75,8 +76,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                       },
                     );
                   },
-                  error: (error, stackTrace) => Center(
-                    child: Text('$error'),
+                  error: (error, stackTrace) => const Center(
+                    child: Text(unknownError),
                   ),
                   loading: () => const LinearProgressIndicator(),
                 ),

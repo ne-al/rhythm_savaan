@@ -52,49 +52,54 @@ class SongTile extends StatelessWidget {
                 showPopover(
                   context: context,
                   bodyBuilder: (context) {
-                    return SizedBox(
-                      height: height * 0.22,
-                      width: width * 0.4,
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              width: double.infinity,
-                              child: TextButton.icon(
+                    return Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextButton.icon(
                                 onPressed: () {},
                                 icon: const Icon(Icons.playlist_add_rounded),
                                 label: const Text('Add to queue'),
                               ),
-                            ),
-                            SizedBox(
-                              width: double.infinity,
-                              child: TextButton.icon(
+                            ],
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextButton.icon(
                                 onPressed: () {},
                                 icon: const Icon(Icons.favorite),
                                 label: const Text('Add to favorite'),
                               ),
-                            ),
-                            SizedBox(
-                              width: double.infinity,
-                              child: TextButton.icon(
+                            ],
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextButton.icon(
                                 onPressed: () {},
                                 icon: const Icon(Icons.album_rounded),
                                 label: const Text('Add to playlist'),
                               ),
-                            ),
-                            SizedBox(
-                              width: double.infinity,
-                              child: TextButton.icon(
+                            ],
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextButton.icon(
                                 onPressed: () {},
                                 icon: const Icon(Icons.info_outline_rounded),
                                 label: const Text('Song details'),
                               ),
-                            ),
-                          ],
-                        ),
+                            ],
+                          ),
+                        ],
                       ),
                     );
                   },
