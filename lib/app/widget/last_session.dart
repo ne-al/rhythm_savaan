@@ -2,28 +2,17 @@
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rhythm_savaan/app/widget/custom_physics.dart';
 import 'package:rhythm_savaan/app/widget/song_tile.dart';
 import 'package:rhythm_savaan/core/providers/music_providers.dart';
-
-// class LastSessionWidget extends ConsumerWidget {
-//   const LastSessionWidget({super.key});
-
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     return Scaffold(
-//       body:
-//     );
-//   }
-// }
 
 Widget lastSessionWidget(WidgetRef ref, BuildContext context) {
   return ref.watch(lastSessionProvider).when(
         data: (lastSessionData) {
-          String songIds = lastSessionData.map((e) => e.songId).toString();
+          List<String> dataId = lastSessionData.map((e) => e.songId).toList();
+          String songIds = dataId.join(',');
 
-          String ids = removeParenthesesAndSpaces(songIds);
-
-          return ref.watch(lastSessionSongByIdsProvider(ids)).when(
+          return ref.watch(lastSessionSongByIdsProvider(songIds)).when(
                 data: (data) {
                   final bool rotated = MediaQuery.sizeOf(context).height <
                       MediaQuery.sizeOf(context).width;
@@ -60,9 +49,8 @@ Widget lastSessionWidget(WidgetRef ref, BuildContext context) {
                               child: Align(
                                 alignment: Alignment.topLeft,
                                 child: ListView.builder(
-                                  physics: const BouncingScrollPhysics(
-                                      decelerationRate:
-                                          ScrollDecelerationRate.fast),
+                                  physics: PagingScrollPhysics(
+                                      itemDimension: listSize),
                                   shrinkWrap: true,
                                   itemExtent: listSize,
                                   scrollDirection: Axis.horizontal,
@@ -106,15 +94,4 @@ Widget lastSessionWidget(WidgetRef ref, BuildContext context) {
         ),
         loading: () => const CircularProgressIndicator.adaptive(),
       );
-}
-
-String removeParenthesesAndSpaces(String inputString) {
-  // Remove parentheses
-  String stringWithoutParentheses =
-      inputString.replaceAll('(', '').replaceAll(')', '');
-
-  // Remove spaces
-  String stringWithoutSpaces = stringWithoutParentheses.replaceAll(' ', '');
-
-  return stringWithoutSpaces;
 }
