@@ -76,6 +76,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
           children: [
             _musicThumbnailTitleWidget(widget.songsModel, width),
             const Gap(24),
