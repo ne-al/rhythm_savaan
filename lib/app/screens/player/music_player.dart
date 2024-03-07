@@ -29,6 +29,8 @@ class _MusicPlayerState extends State<MusicPlayer> {
 
   void initPlayer() async {
     var data = widget.songsModel;
+
+    //! initializing the media item of the song
     MediaItem item = MediaItem(
       id: data.id,
       title: data.name,
@@ -40,27 +42,32 @@ class _MusicPlayerState extends State<MusicPlayer> {
       },
     );
 
+    //! it skip when the playing song is already in queue so it wont have 2 or more same song in queue
     if (audioHandler.queue.value.contains(item)) {
       return;
     }
-    if (audioHandler.queue.value.length > 1) {
-      return;
-    }
+
+    //! it remove current song from queue and add new one when there is song change request done by the user
     if (audioHandler.queue.value.length <= 1 &&
         !audioHandler.queue.value.contains(item)) {
       audioHandler.removeQueueItemAt(0);
     }
 
+    //! add single song to queue then play it
     audioHandler.addQueueItem(item);
     audioHandler.play();
   }
 
+  //! streaming the buffered position of the playing song
   Stream<Duration> get _bufferedPositionStream => audioHandler.playbackState
       .map((state) => state.bufferedPosition)
       .distinct();
+
+  //! streaming the duration of the playing song
   Stream<Duration?> get _durationStream =>
       audioHandler.mediaItem.map((item) => item?.duration).distinct();
 
+  //! streaming the position data of all combine things of the playing song
   Stream<PositionData> get _positionDataStream =>
       Rx.combineLatest3<Duration, Duration, Duration?, PositionData>(
           AudioService.position,
