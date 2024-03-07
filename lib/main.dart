@@ -35,14 +35,27 @@ class RhythmSaavan extends StatelessWidget {
     return MaterialApp(
       title: 'Rhythm Saavan',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
+      darkTheme: ThemeData(
         fontFamily: 'Syne',
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.blueAccent,
           brightness: Brightness.dark,
-        ).copyWith(background: Colors.black),
+        ).copyWith(
+          background: Colors.black87,
+        ),
         useMaterial3: true,
       ),
+      theme: ThemeData(
+        fontFamily: 'Syne',
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.purpleAccent,
+          brightness: Brightness.light,
+        ).copyWith(
+          background: Colors.white,
+        ),
+        useMaterial3: true,
+      ),
+      themeMode: ThemeMode.system,
       home: const BottomNavBar(),
     );
   }

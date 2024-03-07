@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_renaming_method_parameters
+
 import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:logger/logger.dart';
@@ -135,6 +137,19 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
       final newQueue = queue.value..removeAt(index);
       queue.add(newQueue);
     }
+  }
+
+  @override
+  Future<void> updateQueue(List<MediaItem> mediaItems) async {
+    await _playlist.clear();
+
+    // manage Just Audio
+    final audioSource = mediaItems.map(_createAudioSource);
+    _playlist.addAll(audioSource.toList());
+
+    // notify system
+    final newQueue = queue.value..addAll(mediaItems);
+    queue.add(newQueue);
   }
 
   @override

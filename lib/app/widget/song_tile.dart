@@ -50,7 +50,6 @@ class SongTile extends StatelessWidget {
             return IconButton(
               onPressed: () {
                 showPopover(
-                  backgroundColor: Theme.of(context).colorScheme.surface,
                   context: context,
                   bodyBuilder: (context) {
                     return SizedBox(
@@ -77,6 +76,8 @@ class SongTile extends StatelessWidget {
                       ),
                     );
                   },
+                  backgroundColor: Theme.of(context).colorScheme.surface,
+                  direction: PopoverDirection.left,
                 );
               },
               icon: const Icon(Icons.more_vert_rounded),

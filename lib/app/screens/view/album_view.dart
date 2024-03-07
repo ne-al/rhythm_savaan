@@ -1,8 +1,6 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:rhythm_savaan/app/widget/song_tile.dart';
@@ -126,12 +124,9 @@ Widget _playAll(List<SongsModel?> songsList) {
       children: [
         ElevatedButton.icon(
           icon: const Icon(Icons.play_arrow_rounded),
-          onPressed: () {
-            if (audioHandler.queue.value.isNotEmpty) {
-              audioHandler.queue.value.clear();
-            }
-
-            audioHandler.addQueueItems(songsItem);
+          onPressed: () async {
+            await audioHandler.setShuffleMode(AudioServiceShuffleMode.none);
+            audioHandler.updateQueue(songsItem);
             audioHandler.play();
           },
           label: const Text('Play all'),
@@ -141,13 +136,9 @@ Widget _playAll(List<SongsModel?> songsList) {
           width: 65,
           child: IconButton.outlined(
             icon: const Icon(Icons.shuffle_rounded),
-            onPressed: () {
-              if (audioHandler.queue.value.isNotEmpty) {
-                audioHandler.queue.value.clear();
-              }
-
-              audioHandler.setShuffleMode(AudioServiceShuffleMode.all);
-              audioHandler.addQueueItems(songsItem);
+            onPressed: () async {
+              await audioHandler.setShuffleMode(AudioServiceShuffleMode.all);
+              audioHandler.updateQueue(songsItem);
               audioHandler.play();
             },
           ),
