@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:popover/popover.dart';
 import 'package:rhythm_savaan/app/screens/player/music_player.dart';
-import 'package:rhythm_savaan/core/models/freezed_models/helper_models/songs_model.dart';
+import 'package:rhythm_savaan/core/models/helper_models/songs_model.dart';
 
 class SongTile extends StatelessWidget {
   final SongsModel data;

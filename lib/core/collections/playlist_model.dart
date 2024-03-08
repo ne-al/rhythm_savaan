@@ -1,5 +1,5 @@
 import 'package:isar/isar.dart';
-import 'package:rhythm_savaan/core/models/isar_models/song_model.dart';
+import 'package:rhythm_savaan/core/collections/song_model.dart';
 
 part 'playlist_model.g.dart';
 

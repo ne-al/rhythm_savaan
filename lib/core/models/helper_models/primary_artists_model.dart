@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:rhythm_savaan/core/models/freezed_models/helper_models/image_model.dart';
+import 'package:rhythm_savaan/core/models/helper_models/image_model.dart';
 
 part 'primary_artists_model.freezed.dart';
 part 'primary_artists_model.g.dart';

@@ -1,9 +1,9 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rhythm_savaan/core/api/music_api.dart';
-import 'package:rhythm_savaan/core/models/freezed_models/album_model.dart';
-import 'package:rhythm_savaan/core/models/freezed_models/helper_models/songs_model.dart';
-import 'package:rhythm_savaan/core/models/freezed_models/playlist_model.dart';
+import 'package:rhythm_savaan/core/models/album_model.dart';
+import 'package:rhythm_savaan/core/models/helper_models/songs_model.dart';
+import 'package:rhythm_savaan/core/models/playlist_model.dart';
 import 'package:rhythm_savaan/core/services/isar_services.dart';
 import 'package:rhythm_savaan/main.dart';
 

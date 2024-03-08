@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:rhythm_savaan/core/models/freezed_models/helper_models/image_model.dart';
-import 'package:rhythm_savaan/core/models/freezed_models/helper_models/songs_model.dart';
+import 'package:rhythm_savaan/core/models/helper_models/image_model.dart';
+import 'package:rhythm_savaan/core/models/helper_models/songs_model.dart';
 
 part 'album_model.freezed.dart';
 part 'album_model.g.dart';

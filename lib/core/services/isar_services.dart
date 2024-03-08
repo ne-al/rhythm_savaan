@@ -1,10 +1,10 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:rhythm_savaan/core/models/freezed_models/helper_models/songs_model.dart';
-import 'package:rhythm_savaan/core/models/isar_models/last_session_model.dart';
-import 'package:rhythm_savaan/core/models/isar_models/playlist_model.dart';
-import 'package:rhythm_savaan/core/models/isar_models/song_model.dart';
-import 'package:rhythm_savaan/core/models/isar_models/user_model.dart';
+import 'package:rhythm_savaan/core/models/helper_models/songs_model.dart';
+import 'package:rhythm_savaan/core/collections/last_session_model.dart';
+import 'package:rhythm_savaan/core/collections/playlist_model.dart';
+import 'package:rhythm_savaan/core/collections/song_model.dart';
+import 'package:rhythm_savaan/core/collections/user_model.dart';
 
 class IsarServices {
   static late Future<Isar> db;

@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:rhythm_savaan/app/widget/song_tile.dart';
 import 'package:rhythm_savaan/core/constants/const.dart';
-import 'package:rhythm_savaan/core/models/freezed_models/helper_models/songs_model.dart';
+import 'package:rhythm_savaan/core/models/helper_models/songs_model.dart';
 import 'package:rhythm_savaan/core/providers/music_providers.dart';
 import 'package:rhythm_savaan/main.dart';
 

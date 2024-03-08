@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:rhythm_savaan/core/models/freezed_models/album_model.dart';
-import 'package:rhythm_savaan/core/models/freezed_models/helper_models/songs_model.dart';
-import 'package:rhythm_savaan/core/models/freezed_models/playlist_model.dart';
+import 'package:rhythm_savaan/core/models/album_model.dart';
+import 'package:rhythm_savaan/core/models/helper_models/songs_model.dart';
+import 'package:rhythm_savaan/core/models/playlist_model.dart';
 
 class MusicApi {
   final dio = Dio();

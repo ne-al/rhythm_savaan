@@ -3,7 +3,7 @@ import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:rhythm_savaan/core/models/freezed_models/helper_models/songs_model.dart';
+import 'package:rhythm_savaan/core/models/helper_models/songs_model.dart';
 import 'package:rhythm_savaan/core/services/isar_services.dart';
 import 'package:rhythm_savaan/core/services/music_service.dart';
 import 'package:rhythm_savaan/main.dart';
