@@ -6,6 +6,7 @@ import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:rhythm_savaan/app/screens/view/album_view.dart';
 import 'package:rhythm_savaan/app/widget/last_session.dart';
 import 'package:rhythm_savaan/core/constants/const.dart';
+import 'package:rhythm_savaan/core/providers/isar_providers.dart';
 import 'package:rhythm_savaan/core/providers/music_providers.dart';
 
 class HomePage extends ConsumerWidget {

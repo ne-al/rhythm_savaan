@@ -7,12 +7,8 @@ part 'song_model.g.dart';
 class SongModel {
   Id id = Isar.autoIncrement;
   @Index(
-    name: 'songId',
-    caseSensitive: true,
-    unique: true,
-    type: IndexType.hash,
-  )
+      name: 'songId', caseSensitive: true, unique: true, type: IndexType.hash)
   late String songId;
 
-  final playlists = IsarLinks<PlaylistModel>();
+  final playlists = IsarLink<PlaylistModel>();
 }

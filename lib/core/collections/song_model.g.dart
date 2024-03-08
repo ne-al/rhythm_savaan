@@ -48,7 +48,7 @@ const SongModelSchema = CollectionSchema(
       id: -3754423083269161923,
       name: r'playlists',
       target: r'PlaylistModel',
-      single: false,
+      single: true,
     )
   },
   embeddedSchemas: {},
@@ -492,56 +492,9 @@ extension SongModelQueryLinks
     });
   }
 
-  QueryBuilder<SongModel, SongModel, QAfterFilterCondition>
-      playlistsLengthEqualTo(int length) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'playlists', length, true, length, true);
-    });
-  }
-
-  QueryBuilder<SongModel, SongModel, QAfterFilterCondition> playlistsIsEmpty() {
+  QueryBuilder<SongModel, SongModel, QAfterFilterCondition> playlistsIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(r'playlists', 0, true, 0, true);
-    });
-  }
-
-  QueryBuilder<SongModel, SongModel, QAfterFilterCondition>
-      playlistsIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'playlists', 0, false, 999999, true);
-    });
-  }
-
-  QueryBuilder<SongModel, SongModel, QAfterFilterCondition>
-      playlistsLengthLessThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'playlists', 0, true, length, include);
-    });
-  }
-
-  QueryBuilder<SongModel, SongModel, QAfterFilterCondition>
-      playlistsLengthGreaterThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'playlists', length, include, 999999, true);
-    });
-  }
-
-  QueryBuilder<SongModel, SongModel, QAfterFilterCondition>
-      playlistsLengthBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(
-          r'playlists', lower, includeLower, upper, includeUpper);
     });
   }
 }

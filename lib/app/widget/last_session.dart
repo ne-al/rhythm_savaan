@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rhythm_savaan/app/widget/custom_physics.dart';
 import 'package:rhythm_savaan/app/widget/song_tile.dart';
 import 'package:rhythm_savaan/core/constants/const.dart';
-import 'package:rhythm_savaan/core/providers/music_providers.dart';
+import 'package:rhythm_savaan/core/providers/isar_providers.dart';
 
 Widget lastSessionWidget(WidgetRef ref, BuildContext context) {
   return ref.watch(lastSessionProvider).when(
