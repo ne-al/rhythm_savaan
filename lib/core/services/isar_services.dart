@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:rhythm_savaan/app/utils/utils.dart';
 import 'package:rhythm_savaan/core/models/helper_models/songs_model.dart';
 import 'package:rhythm_savaan/core/collections/last_session_model.dart';
 import 'package:rhythm_savaan/core/collections/playlist_model.dart';
@@ -26,7 +28,8 @@ class IsarServices {
   //! search playlist by name
 
   //! create a new playlist
-  Future<void> createNewPlaylist(String playlistName) async {
+  Future<void> createNewPlaylist(
+      String playlistName, BuildContext context) async {
     final isar = await db;
 
     if (await isar.playlistModels
@@ -34,6 +37,12 @@ class IsarServices {
             .playlistNameEqualTo(playlistName)
             .count() >
         0) {
+      if (!context.mounted) return;
+
+      Utils().showWarningToast(
+        'Playlist name already exists.',
+        context,
+      );
       return;
     }
 
@@ -42,9 +51,19 @@ class IsarServices {
       ..playlistId = const Uuid().v4()
       ..dateTime = DateTime.now();
 
-    isar.writeTxn(() async {
-      await isar.playlistModels.put(playlistModel);
-    });
+    try {
+      isar.writeTxn(() async {
+        await isar.playlistModels.put(playlistModel);
+      });
+
+      if (!context.mounted) return;
+
+      Utils().showSuccessToast('Playlist has been created', context);
+    } catch (e) {
+      if (!context.mounted) return;
+
+      Utils().showErrorToast('Some unknown error has ocurred', context);
+    }
   }
 
   //! get all playlist
@@ -86,6 +105,30 @@ class IsarServices {
   //! edit playlist by id
 
   //! delete playlist by id
+  Future<void> deletePlaylistById(
+      String playlistId, BuildContext context) async {
+    final isar = await db;
+
+    try {
+      isar.writeTxn(() async {
+        await isar.songModels
+            .filter()
+            .playlists((q) => q.playlistIdEqualTo(playlistId))
+            .deleteAll();
+
+        await isar.playlistModels
+            .filter()
+            .playlistIdEqualTo(playlistId)
+            .deleteFirst();
+      });
+
+      if (!context.mounted) return;
+      Utils().showErrorToast('Playlist has been deleted', context);
+    } catch (e) {
+      if (!context.mounted) return;
+      Utils().showErrorToast('Some unknown error has ocurred', context);
+    }
+  }
 
   //! fetch playlist by id
 

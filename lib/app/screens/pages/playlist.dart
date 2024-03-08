@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,7 +19,10 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
   void createPlaylist() async {
     if (playlistNameController.text.trim().isNotEmpty &&
         playlistNameController.text.trim().length > 3) {
-      IsarServices().createNewPlaylist(playlistNameController.text.trim());
+      IsarServices().createNewPlaylist(
+        playlistNameController.text.trim(),
+        context,
+      );
 
       playlistNameController.clear();
     }
@@ -78,68 +82,29 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                     ],
                   ),
                 ),
-                Card(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(),
-                      GestureDetector(
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: const Text('Create new playlist'),
-                              content: TextField(
-                                controller: playlistNameController,
-                                decoration: InputDecoration(
-                                  hintText: 'Playlist name',
-                                  contentPadding:
-                                      const EdgeInsets.only(left: 12),
-                                  filled: true,
-                                  fillColor: Theme.of(context)
-                                      .colorScheme
-                                      .primary
-                                      .withOpacity(0.2),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                ),
-                              ),
-                              actions: [
-                                MaterialButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('Cancel'),
-                                ),
-                                MaterialButton(
-                                  onPressed: () {
-                                    createPlaylist();
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('Create'),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                        child: const CircleAvatar(
+                GestureDetector(
+                  onTap: showCreateNewPlaylistDialog,
+                  child: Card(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(),
+                        const CircleAvatar(
                           radius: 75,
                           child: Icon(
                             Icons.add_rounded,
                             size: 100,
                           ),
                         ),
-                      ),
-                      const Text(
-                        'Create new',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                        const Text(
+                          'Create new',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -175,27 +140,33 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                                 itemCount: playlistData.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   var data = playlistData[index];
-                                  return Card(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Container(),
-                                        const CircleAvatar(
-                                          radius: 75,
-                                          child: Icon(
-                                            Icons.music_note_rounded,
-                                            size: 100,
+                                  return GestureDetector(
+                                    onLongPress: () {
+                                      showConfirmDeletePlaylist(
+                                          data.playlistId);
+                                    },
+                                    child: Card(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Container(),
+                                          const CircleAvatar(
+                                            radius: 75,
+                                            child: Icon(
+                                              Icons.music_note_rounded,
+                                              size: 100,
+                                            ),
                                           ),
-                                        ),
-                                        Text(
-                                          data.playlistName,
-                                          style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
+                                          Text(
+                                            data.playlistName,
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   );
                                 },
@@ -216,6 +187,68 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
           ],
         ),
       )),
+    );
+  }
+
+  void showCreateNewPlaylistDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Create new playlist'),
+        content: TextField(
+          controller: playlistNameController,
+          decoration: InputDecoration(
+            hintText: 'Playlist name',
+            contentPadding: const EdgeInsets.only(left: 12),
+            filled: true,
+            fillColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+          ),
+        ),
+        actions: [
+          MaterialButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel'),
+          ),
+          MaterialButton(
+            onPressed: () {
+              createPlaylist();
+              Navigator.pop(context);
+            },
+            child: const Text('Create'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void showConfirmDeletePlaylist(String playlistId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete this playlist ?'),
+        content: const Text('Are you sure you want to delete this playlist?'),
+        actions: [
+          MaterialButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel'),
+          ),
+          MaterialButton(
+            onPressed: () {
+              IsarServices().deletePlaylistById(playlistId, context);
+              Navigator.pop(context);
+            },
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
     );
   }
 }
