@@ -3,16 +3,19 @@ import 'package:isar/isar.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rhythm_savaan/app/utils/utils.dart';
+import 'package:rhythm_savaan/core/constants/const.dart';
 import 'package:rhythm_savaan/core/models/helper_models/songs_model.dart';
 import 'package:rhythm_savaan/core/collections/last_session_model.dart';
 import 'package:rhythm_savaan/core/collections/playlist_model.dart';
 import 'package:rhythm_savaan/core/collections/song_model.dart';
 import 'package:rhythm_savaan/core/collections/user_model.dart';
 import 'package:uuid/uuid.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class IsarServices {
   static late Future<Isar> db;
   final logger = Logger();
+  late final SharedPreferences prefs;
 
   IsarServices() {
     db = openDb();
@@ -72,12 +75,14 @@ class IsarServices {
 
     yield* isar.playlistModels
         .where()
-        .sortByDateTimeDesc()
+        .sortByIsPinnedDesc()
+        .thenByDateTimeDesc()
         .watch(fireImmediately: true);
   }
 
   //! add song to playlist by playlist name
-  Future<void> addSongToPlaylistByName(String playlistName) async {
+  Future<void> addSongToPlaylistByName(
+      String playlistName, String songId) async {
     final isar = await db;
 
     final data = await isar.playlistModels
@@ -86,7 +91,7 @@ class IsarServices {
         .findFirst();
 
     final song = SongModel()
-      ..songId = const Uuid().v4()
+      ..songId = songId
       ..playlists.value = data;
 
     isar.writeTxnSync(() => isar.songModels.putSync(song));
@@ -142,6 +147,14 @@ class IsarServices {
 
     if (fetchData.isNotEmpty) return;
 
+    // if (await isar.playlistModels
+    //         .filter()
+    //         .playlistIdEqualTo(favPlaylistNameAndId)
+    //         .count() ==
+    //     0) {
+    //   logger.w('Favorite does\'nt exists');
+    // }
+
     SongModel song = SongModel()..songId = songData.id;
 
     isar.writeTxnSync(() => isar.songModels.putSync(song));
@@ -175,6 +188,7 @@ class IsarServices {
     }
   }
 
+  //! stream recently played songs
   Stream<List<LastSession>> watchLastSession() async* {
     final isar = await db;
 
@@ -182,6 +196,32 @@ class IsarServices {
         .where()
         .sortByDateTimeDesc()
         .watch(fireImmediately: true);
+  }
+
+  //!init user
+  //! this function will be called if user does'nt already exists in database
+  Future<void> initUser() async {
+    final isar = await db;
+    prefs = await SharedPreferences.getInstance();
+
+    //! initializing favorites
+    try {
+      PlaylistModel favorite = PlaylistModel()
+        ..isPinned = true
+        ..playlistId = favPlaylistNameAndId
+        ..playlistName = favPlaylistNameAndId
+        ..dateTime = DateTime.now();
+
+      isar.writeTxn(() async {
+        await isar.playlistModels.put(favorite);
+      });
+
+      logger.w('Favorite created');
+
+      prefs.setBool('userExists', true);
+    } catch (e) {
+      prefs.setBool('userExists', false);
+    }
   }
 
   //! remove song from playlist

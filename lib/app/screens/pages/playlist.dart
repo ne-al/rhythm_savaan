@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:rhythm_savaan/core/constants/const.dart';
 import 'package:rhythm_savaan/core/providers/isar_providers.dart';
 import 'package:rhythm_savaan/core/services/isar_services.dart';
 
@@ -33,6 +34,7 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
         playlistNameController.text.trim().length > 3) {
       IsarServices().addSongToPlaylistByName(
         playlistNameController.text.trim(),
+        '',
       );
     }
   }
@@ -60,28 +62,6 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2),
               children: [
-                Card(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(),
-                      const CircleAvatar(
-                        radius: 75,
-                        child: Icon(
-                          Icons.favorite_rounded,
-                          size: 90,
-                        ),
-                      ),
-                      const Text(
-                        'Favorite',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
                 GestureDetector(
                   onTap: showCreateNewPlaylistDialog,
                   child: Card(
@@ -142,8 +122,10 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                                   var data = playlistData[index];
                                   return GestureDetector(
                                     onLongPress: () {
-                                      showConfirmDeletePlaylist(
-                                          data.playlistId);
+                                      data.playlistId != favPlaylistNameAndId
+                                          ? showConfirmDeletePlaylist(
+                                              data.playlistId)
+                                          : null;
                                     },
                                     child: Card(
                                       child: Column(
