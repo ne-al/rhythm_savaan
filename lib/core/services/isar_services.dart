@@ -147,18 +147,26 @@ class IsarServices {
 
     if (fetchData.isNotEmpty) return;
 
-    // if (await isar.playlistModels
-    //         .filter()
-    //         .playlistIdEqualTo(favPlaylistNameAndId)
-    //         .count() ==
-    //     0) {
-    //   logger.w('Favorite does\'nt exists');
-    // }
+    final playlist = await isar.playlistModels
+        .filter()
+        .playlistIdEqualTo(favPlaylistNameAndId)
+        .findFirst();
 
-    SongModel song = SongModel()..songId = songData.id;
+    SongModel song = SongModel()
+      ..songId = songData.id
+      ..playlists.value = playlist;
 
     isar.writeTxnSync(() => isar.songModels.putSync(song));
   }
+
+  // //! check if current song is liked or not
+  // Stream<bool> isSongLiked(String songId) async* {
+  //   final isar = await db;
+  //   yield* isar.playlistModels
+  //       .filter()
+  //       .song((q) => q.songIdEqualTo(songId))
+  //       .watch();
+  // }
 
   //! add song to last session
   Future<void> addSongToLastSession(String songId, String songName) async {

@@ -24,6 +24,7 @@ class MusicPlayer extends StatefulWidget {
 }
 
 class _MusicPlayerState extends State<MusicPlayer> {
+  //! calling init to initialize player
   @override
   void initState() {
     super.initState();
@@ -32,6 +33,9 @@ class _MusicPlayerState extends State<MusicPlayer> {
 
   void initPlayer() async {
     var data = widget.songsModel;
+
+    //! adding this song to recent plays
+    IsarServices().addSongToLastSession(data.id, data.name);
 
     //! initializing the media item of the song
     MediaItem item = MediaItem(
@@ -48,8 +52,6 @@ class _MusicPlayerState extends State<MusicPlayer> {
     //! initializing the commonly used values
     int queueLength = audioHandler.queue.value.length;
     List<MediaItem> queueValue = audioHandler.queue.value;
-
-    IsarServices().addSongToLastSession(data.id, data.name);
 
     //! if it is from miniplayer then it skip all change to audio handler and keep all the data same
     if (widget.fromMiniplayer == true) {

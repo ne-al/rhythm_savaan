@@ -1,8 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gap/gap.dart';
 import 'package:rhythm_savaan/core/constants/const.dart';
 import 'package:rhythm_savaan/core/providers/isar_providers.dart';
 import 'package:rhythm_savaan/core/services/isar_services.dart';
@@ -50,124 +47,92 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Playlists'),
+        actions: [
+          IconButton(
+            onPressed: showCreateNewPlaylistDialog,
+            icon: const Icon(Icons.add_rounded),
+          ),
+        ],
       ),
       body: SafeArea(
           child: SingleChildScrollView(
-        child: Column(
-          children: [
-            const Gap(12),
-            GridView(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2),
-              children: [
-                GestureDetector(
-                  onTap: showCreateNewPlaylistDialog,
-                  child: Card(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Container(),
-                        const CircleAvatar(
-                          radius: 75,
-                          child: Icon(
-                            Icons.add_rounded,
-                            size: 100,
+        child: ref.watch(getAllPlaylistProvider).when(
+              data: (playlistData) {
+                return Column(
+                  children: [
+                    const Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+                      child: Row(
+                        children: [
+                          Text(
+                            'Your playlists',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.2,
+                            ),
                           ),
-                        ),
-                        const Text(
-                          'Create new',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ),
-              ],
-            ),
-            ref.watch(getAllPlaylistProvider).when(
-                  data: (playlistData) {
-                    return Column(
-                      children: [
-                        const Padding(
-                          padding:
-                              EdgeInsets.symmetric(vertical: 14, horizontal: 8),
-                          child: Row(
-                            children: [
-                              Text(
-                                'Your playlists',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1.2,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        playlistData.isNotEmpty
-                            ? GridView.builder(
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                ),
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: playlistData.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  var data = playlistData[index];
-                                  return GestureDetector(
-                                    onLongPress: () {
-                                      data.playlistId != favPlaylistNameAndId
-                                          ? showConfirmDeletePlaylist(
-                                              data.playlistId)
-                                          : null;
-                                    },
-                                    child: Card(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Container(),
-                                          const CircleAvatar(
-                                            radius: 75,
-                                            child: Icon(
-                                              Icons.music_note_rounded,
-                                              size: 100,
-                                            ),
-                                          ),
-                                          Text(
-                                            data.playlistName,
-                                            style: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
+                    playlistData.isNotEmpty
+                        ? GridView.builder(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                            ),
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: playlistData.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              var data = playlistData[index];
+                              return GestureDetector(
+                                onLongPress: () {
+                                  data.playlistId != favPlaylistNameAndId
+                                      ? showConfirmDeletePlaylist(
+                                          data.playlistId)
+                                      : null;
                                 },
-                              )
-                            : const Center(
-                                child: Text('You don\'t have any playlist'),
-                              ),
-                      ],
-                    );
-                  },
-                  error: (error, stackTrace) => const Center(
-                    child: Text('Error'),
-                  ),
-                  loading: () => const Center(
-                    child: CircularProgressIndicator.adaptive(),
-                  ),
-                ),
-          ],
-        ),
+                                child: Card(
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Container(),
+                                      const CircleAvatar(
+                                        radius: 75,
+                                        child: Icon(
+                                          Icons.music_note_rounded,
+                                          size: 100,
+                                        ),
+                                      ),
+                                      Text(
+                                        data.playlistName,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          )
+                        : const Center(
+                            child: Text('You don\'t have any playlist'),
+                          ),
+                  ],
+                );
+              },
+              error: (error, stackTrace) => const Center(
+                child: Text('Error'),
+              ),
+              loading: () => const Center(
+                child: CircularProgressIndicator.adaptive(),
+              ),
+            ),
       )),
     );
   }
