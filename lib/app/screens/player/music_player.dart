@@ -3,6 +3,7 @@ import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:rhythm_savaan/app/helper/helper.dart';
 import 'package:rhythm_savaan/core/models/helper_models/songs_model.dart';
 import 'package:rhythm_savaan/core/services/isar_services.dart';
 import 'package:rhythm_savaan/core/services/music_service.dart';
@@ -127,8 +128,7 @@ Widget _musicThumbnailTitleWidget(SongsModel data, double width) {
               child: Column(
                 children: [
                   Text(
-                    snapshot.data?.title.replaceAll('&#039;', '\'') ??
-                        data.name.replaceAll('&#039;', '\''),
+                    Helper().fixTitle(snapshot.data?.title ?? data.name),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(

@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+import 'package:rhythm_savaan/app/helper/helper.dart';
 import 'package:rhythm_savaan/app/screens/player/music_player.dart';
 import 'package:rhythm_savaan/core/providers/music_providers.dart';
 import 'package:rhythm_savaan/core/services/music_service.dart';
@@ -28,8 +29,7 @@ class MiniPlayer extends ConsumerWidget {
               data: (data) {
                 return ref.watch(songByIdProvider(data?.id ?? '')).when(
                       data: (songsData) {
-                        String title =
-                            songsData.name.replaceAll('&#039;', '\'');
+                        String title = Helper().fixTitle(data?.title ?? '');
                         return GestureDetector(
                           onTap: () async {
                             if (!context.mounted) return;

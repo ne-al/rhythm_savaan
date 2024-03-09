@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:rhythm_savaan/app/helper/helper.dart';
 import 'package:rhythm_savaan/app/widget/song_tile.dart';
 import 'package:rhythm_savaan/core/constants/const.dart';
 import 'package:rhythm_savaan/core/models/helper_models/songs_model.dart';
@@ -28,7 +29,7 @@ class AlbumView extends ConsumerWidget {
             ? ref.watch(albumByIdProvider(id)).when(
                   data: (albumData) {
                     return _playlistView(
-                      albumData.name,
+                      Helper().fixTitle(albumData.name),
                       albumData.image[2]!.link,
                       albumData.songs,
                       height,
@@ -59,7 +60,7 @@ class AlbumView extends ConsumerWidget {
                     ? ref.watch(playlistByIdProvider(id)).when(
                           data: (playlistData) {
                             return _playlistView(
-                              playlistData.name,
+                              Helper().fixTitle(playlistData.name),
                               playlistData.image[2].link,
                               playlistData.songs,
                               height,
@@ -84,7 +85,7 @@ class AlbumView extends ConsumerWidget {
 
 Widget _songView(SongsModel songData, double height, BuildContext context) {
   String thumbnail = songData.image[2].link;
-  String name = songData.name;
+  String name = Helper().fixTitle(songData.name);
   List<SongsModel> songList = [];
   songList.add(songData);
 

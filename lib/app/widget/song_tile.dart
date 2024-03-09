@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:popover/popover.dart';
+import 'package:rhythm_savaan/app/helper/helper.dart';
 import 'package:rhythm_savaan/app/screens/player/music_player.dart';
 import 'package:rhythm_savaan/core/models/helper_models/songs_model.dart';
 
@@ -17,7 +18,7 @@ class SongTile extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
-    String title = data.name.replaceAll('&#039;', '\'');
+    String title = Helper().fixTitle(data.name);
 
     return GestureDetector(
       onTap: () {
