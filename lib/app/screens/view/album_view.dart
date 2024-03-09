@@ -204,8 +204,8 @@ Widget _playAll(List<SongsModel?> songsList) {
           child: IconButton.outlined(
             icon: const Icon(Icons.shuffle_rounded),
             onPressed: () async {
-              await audioHandler.setShuffleMode(AudioServiceShuffleMode.all);
               audioHandler.updateQueue(songsItem);
+              audioHandler.setShuffleMode(AudioServiceShuffleMode.all);
               audioHandler.play();
             },
           ),

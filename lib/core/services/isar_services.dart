@@ -4,7 +4,6 @@ import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rhythm_savaan/app/utils/utils.dart';
 import 'package:rhythm_savaan/core/constants/const.dart';
-import 'package:rhythm_savaan/core/models/helper_models/songs_model.dart';
 import 'package:rhythm_savaan/core/collections/last_session_model.dart';
 import 'package:rhythm_savaan/core/collections/playlist_model.dart';
 import 'package:rhythm_savaan/core/collections/song_model.dart';
@@ -140,10 +139,10 @@ class IsarServices {
   //! fetch all songs of a playlist
 
   //! add song to favorite playlist
-  Future<void> addSongToFavorite(SongsModel songData) async {
+  Future<void> addSongToFavorite(String songId) async {
     final isar = await db;
     var fetchData =
-        await isar.songModels.filter().songIdEqualTo(songData.id).findAll();
+        await isar.songModels.filter().songIdEqualTo(songId).findAll();
 
     if (fetchData.isNotEmpty) return;
 
@@ -153,20 +152,22 @@ class IsarServices {
         .findFirst();
 
     SongModel song = SongModel()
-      ..songId = songData.id
+      ..songId = songId
       ..playlists.value = playlist;
 
     isar.writeTxnSync(() => isar.songModels.putSync(song));
   }
 
-  // //! check if current song is liked or not
-  // Stream<bool> isSongLiked(String songId) async* {
-  //   final isar = await db;
-  //   yield* isar.playlistModels
-  //       .filter()
-  //       .song((q) => q.songIdEqualTo(songId))
-  //       .watch();
-  // }
+  //! check if current song is liked or not
+  Stream<bool> isSongLiked(String songId) async* {
+    final isar = await db;
+
+    yield* isar.playlistModels
+        .filter()
+        .song((q) => q.songIdEqualTo(songId))
+        .watch(fireImmediately: true)
+        .map((event) => event.isEmpty);
+  }
 
   //! add song to last session
   Future<void> addSongToLastSession(String songId, String songName) async {

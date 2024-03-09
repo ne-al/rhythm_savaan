@@ -17,3 +17,8 @@ final getAllPlaylistProvider =
     StreamProvider.autoDispose<List<PlaylistModel>>((ref) {
   return IsarServices().getAllPlaylist();
 });
+
+final isSongLikedProvider =
+    StreamProvider.family.autoDispose<bool, String>((ref, songId) {
+  return IsarServices().isSongLiked(songId);
+});

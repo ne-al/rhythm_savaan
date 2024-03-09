@@ -2,6 +2,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:rhythm_savaan/app/helper/helper.dart';
 import 'package:rhythm_savaan/core/models/helper_models/songs_model.dart';
@@ -9,7 +10,7 @@ import 'package:rhythm_savaan/core/services/isar_services.dart';
 import 'package:rhythm_savaan/core/services/music_service.dart';
 import 'package:rhythm_savaan/main.dart';
 
-class MusicPlayer extends StatefulWidget {
+class MusicPlayer extends ConsumerStatefulWidget {
   final SongsModel songsModel;
   final bool fromMiniplayer;
   final int songIndex;
@@ -21,10 +22,10 @@ class MusicPlayer extends StatefulWidget {
   });
 
   @override
-  State<MusicPlayer> createState() => _MusicPlayerState();
+  ConsumerState<MusicPlayer> createState() => _MusicPlayerState();
 }
 
-class _MusicPlayerState extends State<MusicPlayer> {
+class _MusicPlayerState extends ConsumerState<MusicPlayer> {
   //! calling init to initialize player
   @override
   void initState() {
@@ -101,7 +102,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
             const Gap(24),
             progressBarController(positionDataStream, width, false),
             const Gap(12),
-            _musicControllers(widget.songsModel),
+            _musicControllers(widget.songsModel, ref),
           ],
         ),
       ),
@@ -189,7 +190,7 @@ Widget progressBarController(
   );
 }
 
-Widget _musicControllers(SongsModel songData) {
+Widget _musicControllers(SongsModel songData, WidgetRef ref) {
   return StreamBuilder<PlaybackState?>(
     stream: audioHandler.playbackState,
     builder: (context, snapshot) {
@@ -222,16 +223,100 @@ Widget _musicControllers(SongsModel songData) {
             },
             icon: const Icon(Icons.skip_next_rounded),
           ),
-          IconButton(
-            onPressed: () async {
-              await IsarServices().addSongToFavorite(songData);
-            },
-            icon: const Icon(Icons.favorite_outline_rounded),
-          ),
+          _likeButton(songData),
         ],
       );
     },
   );
+}
+
+Widget _likeButton(SongsModel songData) {
+  return StreamBuilder(
+    stream: audioHandler.mediaItem,
+    builder: (context, snapshot) {
+      return StreamBuilder(
+        stream: IsarServices().isSongLiked(snapshot.data?.id ?? songData.id),
+        builder: (context, isLiked) {
+          if (isLiked.connectionState == ConnectionState.waiting) {
+            return IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.heart_broken_rounded),
+            );
+          }
+          if (isLiked.hasData) {
+            bool liked = isLiked.data!;
+            return IconButton(
+              onPressed: () {
+                liked
+                    ? IsarServices()
+                        .addSongToFavorite(snapshot.data?.id ?? songData.id)
+                    : null;
+              },
+              icon: liked
+                  ? const Icon(Icons.favorite_outline_rounded,
+                      color: Colors.grey)
+                  : const Icon(Icons.favorite_rounded, color: Colors.red),
+            );
+          }
+          return IconButton(
+            onPressed: () {},
+            icon: const Icon(
+              Icons.heart_broken_rounded,
+              color: Colors.red,
+            ),
+          );
+        },
+      );
+    },
+  );
+
+  // Consumer(
+  //   builder: (context, ref, child) => ref.watch(mediaItemProvider).when(
+  //         data: (data) {
+  //           return ref.watch(isSongLikedProvider(data?.id ?? songData.id)).when(
+  //                 data: (isLiked) {
+  // return IconButton(
+  //   onPressed: () {
+  //     isLiked
+  //         ? IsarServices()
+  //             .addSongToFavorite(data?.id ?? songData.id)
+  //         : null;
+  //   },
+  //   icon: isLiked
+  //       ? const Icon(Icons.favorite_outline_rounded,
+  //           color: Colors.grey)
+  //       : const Icon(Icons.favorite_rounded,
+  //           color: Colors.red),
+  // );
+  //                 },
+  //                 error: (error, stackTrace) => IconButton(
+  //                   onPressed: () {},
+  //                   icon: const Icon(Icons.favorite_outline_rounded,
+  //                       color: Colors.yellow),
+  //                 ),
+  //                 loading: () => IconButton(
+  //                   onPressed: () {},
+  //                   icon: const Icon(
+  //                     Icons.favorite_outline_rounded,
+  //                     color: Colors.red,
+  //                   ),
+  //                 ),
+  //               );
+  //         },
+  //         error: (error, stackTrace) => IconButton(
+  //           onPressed: () {},
+  //           icon: const Icon(Icons.favorite_outline_rounded,
+  //               color: Colors.yellow),
+  //         ),
+  //         loading: () => IconButton(
+  //           onPressed: () {},
+  //           icon: const Icon(
+  //             Icons.favorite_outline_rounded,
+  //             color: Colors.red,
+  //           ),
+  //         ),
+  //       ),
+  // );
 }
 
 Widget _repeatMode() {
