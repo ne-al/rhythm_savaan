@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rhythm_savaan/core/api/music_api.dart';
 import 'package:rhythm_savaan/core/collections/playlist_model.dart';
+import 'package:rhythm_savaan/core/collections/song_model.dart';
 import 'package:rhythm_savaan/core/models/helper_models/songs_model.dart';
 import 'package:rhythm_savaan/core/services/isar_services.dart';
 
@@ -21,4 +22,9 @@ final getAllPlaylistProvider =
 final isSongLikedProvider =
     StreamProvider.family.autoDispose<bool, String>((ref, songId) {
   return IsarServices().isSongLiked(songId);
+});
+
+final getAllSongsOfPlaylistProvider = StreamProvider.autoDispose
+    .family<List<SongModel>, String>((ref, playlistId) {
+  return IsarServices().fetchAllSongsOfPlaylist(playlistId);
 });

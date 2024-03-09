@@ -17,8 +17,13 @@ const SongModelSchema = CollectionSchema(
   name: r'SongModel',
   id: 5804096728791725223,
   properties: {
-    r'songId': PropertySchema(
+    r'dateTime': PropertySchema(
       id: 0,
+      name: r'dateTime',
+      type: IsarType.dateTime,
+    ),
+    r'songId': PropertySchema(
+      id: 1,
       name: r'songId',
       type: IsarType.string,
     )
@@ -74,7 +79,8 @@ void _songModelSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.songId);
+  writer.writeDateTime(offsets[0], object.dateTime);
+  writer.writeString(offsets[1], object.songId);
 }
 
 SongModel _songModelDeserialize(
@@ -84,8 +90,9 @@ SongModel _songModelDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = SongModel();
+  object.dateTime = reader.readDateTime(offsets[0]);
   object.id = id;
-  object.songId = reader.readString(offsets[0]);
+  object.songId = reader.readString(offsets[1]);
   return object;
 }
 
@@ -97,6 +104,8 @@ P _songModelDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
+      return (reader.readDateTime(offset)) as P;
+    case 1:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -296,6 +305,59 @@ extension SongModelQueryWhere
 
 extension SongModelQueryFilter
     on QueryBuilder<SongModel, SongModel, QFilterCondition> {
+  QueryBuilder<SongModel, SongModel, QAfterFilterCondition> dateTimeEqualTo(
+      DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'dateTime',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<SongModel, SongModel, QAfterFilterCondition> dateTimeGreaterThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'dateTime',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<SongModel, SongModel, QAfterFilterCondition> dateTimeLessThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'dateTime',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<SongModel, SongModel, QAfterFilterCondition> dateTimeBetween(
+    DateTime lower,
+    DateTime upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'dateTime',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<SongModel, SongModel, QAfterFilterCondition> idEqualTo(
       Id value) {
     return QueryBuilder.apply(this, (query) {
@@ -500,6 +562,18 @@ extension SongModelQueryLinks
 }
 
 extension SongModelQuerySortBy on QueryBuilder<SongModel, SongModel, QSortBy> {
+  QueryBuilder<SongModel, SongModel, QAfterSortBy> sortByDateTime() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dateTime', Sort.asc);
+    });
+  }
+
+  QueryBuilder<SongModel, SongModel, QAfterSortBy> sortByDateTimeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dateTime', Sort.desc);
+    });
+  }
+
   QueryBuilder<SongModel, SongModel, QAfterSortBy> sortBySongId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'songId', Sort.asc);
@@ -515,6 +589,18 @@ extension SongModelQuerySortBy on QueryBuilder<SongModel, SongModel, QSortBy> {
 
 extension SongModelQuerySortThenBy
     on QueryBuilder<SongModel, SongModel, QSortThenBy> {
+  QueryBuilder<SongModel, SongModel, QAfterSortBy> thenByDateTime() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dateTime', Sort.asc);
+    });
+  }
+
+  QueryBuilder<SongModel, SongModel, QAfterSortBy> thenByDateTimeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dateTime', Sort.desc);
+    });
+  }
+
   QueryBuilder<SongModel, SongModel, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -542,6 +628,12 @@ extension SongModelQuerySortThenBy
 
 extension SongModelQueryWhereDistinct
     on QueryBuilder<SongModel, SongModel, QDistinct> {
+  QueryBuilder<SongModel, SongModel, QDistinct> distinctByDateTime() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'dateTime');
+    });
+  }
+
   QueryBuilder<SongModel, SongModel, QDistinct> distinctBySongId(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -555,6 +647,12 @@ extension SongModelQueryProperty
   QueryBuilder<SongModel, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<SongModel, DateTime, QQueryOperations> dateTimeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'dateTime');
     });
   }
 

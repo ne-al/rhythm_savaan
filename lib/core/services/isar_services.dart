@@ -91,6 +91,7 @@ class IsarServices {
 
     final song = SongModel()
       ..songId = songId
+      ..dateTime = DateTime.now()
       ..playlists.value = data;
 
     isar.writeTxnSync(() => isar.songModels.putSync(song));
@@ -135,8 +136,25 @@ class IsarServices {
   }
 
   //! fetch playlist by id
+  Stream<List<PlaylistModel>> fetchPlaylistById(String playlistId) async* {
+    final isar = await db;
+
+    yield* isar.playlistModels
+        .where()
+        .playlistIdEqualTo(playlistId)
+        .watch(fireImmediately: true);
+  }
 
   //! fetch all songs of a playlist
+  Stream<List<SongModel>> fetchAllSongsOfPlaylist(String playlistId) async* {
+    final isar = await db;
+
+    yield* isar.songModels
+        .filter()
+        .playlists((q) => q.playlistIdEqualTo(playlistId))
+        .sortByDateTimeDesc()
+        .watch(fireImmediately: true);
+  }
 
   //! add song to favorite playlist
   Future<void> addSongToFavorite(String songId) async {
@@ -153,6 +171,7 @@ class IsarServices {
 
     SongModel song = SongModel()
       ..songId = songId
+      ..dateTime = DateTime.now()
       ..playlists.value = playlist;
 
     isar.writeTxnSync(() => isar.songModels.putSync(song));

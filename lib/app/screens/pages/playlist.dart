@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+import 'package:rhythm_savaan/app/widget/test.dart';
 import 'package:rhythm_savaan/core/constants/const.dart';
 import 'package:rhythm_savaan/core/providers/isar_providers.dart';
 import 'package:rhythm_savaan/core/services/isar_services.dart';
@@ -88,6 +90,14 @@ class _PlaylistPageState extends ConsumerState<PlaylistPage> {
                             itemBuilder: (BuildContext context, int index) {
                               var data = playlistData[index];
                               return GestureDetector(
+                                onTap: () {
+                                  pushNewScreen(
+                                    context,
+                                    screen: CustomPlaylist(
+                                        playlistId: data.playlistId),
+                                    withNavBar: false,
+                                  );
+                                },
                                 onLongPress: () {
                                   data.playlistId != favPlaylistNameAndId
                                       ? showConfirmDeletePlaylist(

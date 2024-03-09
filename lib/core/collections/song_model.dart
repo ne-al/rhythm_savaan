@@ -9,6 +9,7 @@ class SongModel {
   @Index(
       name: 'songId', caseSensitive: true, unique: true, type: IndexType.hash)
   late String songId;
+  late DateTime dateTime;
 
   final playlists = IsarLink<PlaylistModel>();
 }
