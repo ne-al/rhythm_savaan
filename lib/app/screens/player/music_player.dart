@@ -125,7 +125,8 @@ Widget _musicThumbnailTitleWidget(SongsModel data, double width) {
               child: Column(
                 children: [
                   Text(
-                    snapshot.data?.title ?? data.name,
+                    snapshot.data?.title.replaceAll('&#039;', '\'') ??
+                        data.name.replaceAll('&#039;', '\''),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(

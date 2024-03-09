@@ -27,87 +27,92 @@ class MiniPlayer extends ConsumerWidget {
         child: ref.watch(mediaItemProvider).when(
               data: (data) {
                 return ref.watch(songByIdProvider(data?.id ?? '')).when(
-                      data: (songsData) => GestureDetector(
-                        onTap: () async {
-                          if (!context.mounted) return;
-                          pushNewScreen(
-                            context,
-                            screen: MusicPlayer(
-                              songsModel: songsData,
-                              fromMiniplayer: true,
-                            ),
-                          );
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surface,
-                            borderRadius: BorderRadius.circular(
-                              6,
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(6),
-                                child: CachedNetworkImage(
-                                  imageUrl: data?.artUri.toString() ?? '',
-                                  width: 50,
-                                  height: 50,
-                                  fit: BoxFit.cover,
-                                ),
+                      data: (songsData) {
+                        String title =
+                            songsData.name.replaceAll('&#039;', '\'');
+                        return GestureDetector(
+                          onTap: () async {
+                            if (!context.mounted) return;
+                            pushNewScreen(
+                              context,
+                              screen: MusicPlayer(
+                                songsModel: songsData,
+                                fromMiniplayer: true,
                               ),
-                              const Gap(12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    SizedBox(
-                                      width: width * 0.45,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            songsData.name,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.grey.shade200,
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.surface,
+                              borderRadius: BorderRadius.circular(
+                                6,
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(6),
+                                  child: CachedNetworkImage(
+                                    imageUrl: data?.artUri.toString() ?? '',
+                                    width: 50,
+                                    height: 50,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                const Gap(12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      SizedBox(
+                                        width: width * 0.45,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              title,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.grey.shade200,
+                                              ),
                                             ),
-                                          ),
-                                          Text(
-                                            songsData.primaryArtists,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.grey.shade500,
+                                            Text(
+                                              songsData.primaryArtists,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.grey.shade500,
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    const Gap(4),
-                                    progressBarController(
-                                      positionDataStream,
-                                      MediaQuery.of(context).size.width,
-                                      true,
-                                    ),
-                                  ],
+                                      const Gap(4),
+                                      progressBarController(
+                                        positionDataStream,
+                                        MediaQuery.of(context).size.width,
+                                        true,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              _musicControllers()
-                            ],
+                                _musicControllers()
+                              ],
+                            ),
                           ),
-                        ),
-                      ),
+                        );
+                      },
                       error: (error, stackTrace) => Container(),
                       loading: () => Container(),
                     );

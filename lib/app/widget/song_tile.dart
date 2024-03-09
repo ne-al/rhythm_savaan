@@ -17,6 +17,8 @@ class SongTile extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
+    String title = data.name.replaceAll('&#039;', '\'');
+
     return GestureDetector(
       onTap: () {
         pushNewScreen(
@@ -36,7 +38,7 @@ class SongTile extends StatelessWidget {
           ),
         ),
         title: Text(
-          data.name,
+          title,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
